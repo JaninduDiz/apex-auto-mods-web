@@ -14,8 +14,12 @@ import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from '@/components/ui/progress';
+// MOCK DATA: Import mock data. Replace with your actual data fetching logic.
+import { staticServices, activeServices as mockActiveServices } from "@/lib/constants";
+
 
 interface Service {
+  id: string;
   name: string;
   description: string;
   price: string;
@@ -23,81 +27,20 @@ interface Service {
 }
 
 interface ActiveService extends Service {
-    id: string;
     carModel: string;
     status: "In Progress" | "Completed";
     progress: number;
 }
 
-const staticServices: Service[] = [
-  {
-    name: "ECU Tunning",
-    description: "Unlock your car's true potential with our custom ECU tunes. More power, better fuel economy.",
-    price: "Starting from $500",
-    icon: Wrench,
-  },
-  {
-    name: "Performance Exhaust Systems",
-    description: "Upgrade your car's sound and performance with a high-flow exhaust system from top brands.",
-    price: "Starting from $800",
-    icon: Wrench,
-  },
-  {
-    name: "Suspension Upgrades",
-    description: "Improve handling and get the perfect stance with coilovers, lowering springs, and sway bars.",
-    price: "Starting from $1200",
-    icon: Wrench,
-  },
-  {
-    name: "Custom Body Kits",
-    description: "Transform the look of your car with our wide selection of body kits. Professional installation.",
-    price: "Contact for quote",
-    icon: Car,
-  },
-  {
-    name: "Vinyl Wraps & Paint Protection",
-    description: "Change your car's color with a custom vinyl wrap or protect your paint with our PPF services.",
-    price: "Starting from $2000",
-    icon: ShieldCheck,
-  },
-  {
-    name: "Wheel & Tire Packages",
-    description: "A wide selection of wheels and tires to fit any style and budget. Mounting and balancing included.",
-    price: "Starting from $1500",
-    icon: Wrench,
-  },
-];
-
-
-const activeServices: ActiveService[] = [
-    {
-        id: "SRV001",
-        carModel: "Nissan GTR R35",
-        name: "Suspension Upgrades",
-        description: "Improve handling and get the perfect stance with coilovers, lowering springs, and sway bars.",
-        price: "$1,450",
-        status: "In Progress",
-        progress: 45,
-        icon: Wrench,
-    },
-    {
-        id: "SRV002",
-        carModel: "Range Rover Evoque",
-        name: "Wheel & Tire Packages",
-        description: "A wide selection of wheels and tires to fit any style and budget. Mounting and balancing included.",
-        price: "$2,100",
-        status: "Completed",
-        progress: 100,
-        icon: Wrench,
-    }
-]
 
 function ServicesComponent() {
   const searchParams = useSearchParams();
-  const [services, setServices] = useState<Service[]>([]);
+  const [services, setServices] = useState<Omit<Service, 'id'>[]>([]);
+  // MOCK DATA: Using mock active services. Replace with state from an API call.
+  const [activeServices, setActiveServices] = useState<ActiveService[]>(mockActiveServices);
   const [isLoadingServices, setIsLoadingServices] = useState(true);
   const [isBooking, setIsBooking] = useState(false);
-  const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const [selectedService, setSelectedService] = useState<Omit<Service, 'id'> | null>(null);
   const [selectedActiveService, setSelectedActiveService] = useState<ActiveService | null>(null);
   const [isViewingDetails, setIsViewingDetails] = useState(false);
   const [activeTab, setActiveTab] = useState("available");
@@ -107,6 +50,15 @@ function ServicesComponent() {
     const fetchServices = async () => {
       setIsLoadingServices(true);
       try {
+        // TODO: Replace this with an actual API call to your backend
+        // const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/services`);
+        // if (!response.ok) {
+        //   throw new Error("Failed to fetch services");
+        // }
+        // const data = await response.json();
+        // setServices(data);
+
+        // Using static data for now
         setServices(staticServices);
       } catch (error) {
         console.error(error);
@@ -120,6 +72,15 @@ function ServicesComponent() {
         setIsLoadingServices(false);
       }
     };
+
+    // TODO: Fetch active services for the logged-in user
+    // This would typically involve getting the user's ID from an auth context
+    // and making a call like:
+    // const fetchActiveServices = async (userId) => {
+    //   const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/services/active/${userId}`);
+    //   ...
+    // }
+
     fetchServices();
   }, [toast]);
 
@@ -132,21 +93,28 @@ function ServicesComponent() {
     }
 
     if (serviceId) {
+      // Using mock data. In a real app, you would have already fetched this.
       const serviceToView = activeServices.find(s => s.id === serviceId);
       if (serviceToView) {
         setSelectedActiveService(serviceToView);
         setIsViewingDetails(true);
       }
     }
-  }, [searchParams]);
+  }, [searchParams, activeServices]);
 
-  const handleBookClick = (service: Service) => {
+  const handleBookClick = (service: Omit<Service, 'id'>) => {
     setSelectedService(service);
     setIsBooking(true);
   }
 
   const handleBookingSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    // TODO: Add logic here to submit the booking to your backend API
+    // For example:
+    // await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/services/book`, {
+    //   method: 'POST',
+    //   body: JSON.stringify({ serviceName: selectedService.name, ... }),
+    // });
     setIsBooking(false);
     toast({
       title: "Booking Confirmed!",

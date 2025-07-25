@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -57,25 +58,29 @@ export function CustomizationWorkspace() {
   const handleSaveBuild = async () => {
     setIsSavingBuild(true);
     try {
-      // In a real app, you'd get the token from your auth context
-      const token = localStorage.getItem('token'); 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/builds`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          // 'Authorization': `Bearer ${token}` 
-        },
-        body: JSON.stringify({
-          carModel: 'Toyota Supra GR',
-          ...customization
-        }),
-      });
+      // TODO: Replace this with your actual API call.
+      // In a real app, you'd get the token from your auth context.
+      // const token = localStorage.getItem('token'); 
+      // const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/builds`, {
+      //   method: 'POST',
+      //   headers: { 
+      //     'Content-Type': 'application/json',
+      //     'Authorization': `Bearer ${token}` 
+      //   },
+      //   body: JSON.stringify({
+      //     carModel: 'Toyota Supra GR',
+      //     ...customization
+      //   }),
+      // });
 
-      if (!response.ok) {
-        throw new Error("Failed to save build. Note: This is a dummy endpoint.");
-      }
+      // if (!response.ok) {
+      //   throw new Error("Failed to save build.");
+      // }
       
-      console.log("Dummy save successful", { response });
+      // Simulating a successful API call for now.
+      console.log("Dummy save successful", { customization });
+      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network delay
+
       toast({
         title: "Build Saved!",
         description: "Your custom configuration has been saved to your profile.",

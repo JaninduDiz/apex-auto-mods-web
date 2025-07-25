@@ -9,83 +9,20 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import React from "react";
-
-const hotCollections = [
-  {
-    name: "Range Rover Evoque",
-    image: "https://placehold.co/300x200.png",
-    price: "$38,700",
-    dataAiHint: "orange range rover evoque",
-    details: [
-      { value: "3997 CC" },
-      { value: "246.74 BHP" },
-      { value: "5 Speed" },
-      { value: "4 Cylinder" },
-    ],
-    totalRun: "12,500 Km"
-  },
-  {
-    name: "Nissan GTR R35 Nismo",
-    image: "https://placehold.co/300x200.png",
-    price: "$187,900",
-    dataAiHint: "white nissan gtr",
-    details: [
-      { value: "3799 CC" },
-      { value: "591.4 BHP" },
-      { value: "6 Speed" },
-      { value: "6 Cylinder" },
-    ],
-    totalRun: "17,754 Km"
-  }
-];
-
-const regularCollections = [
-  {
-    model: "Honda Cr-V 2021",
-    totalRun: "22,409 Km",
-    condition: "Great",
-    price: "$30,450",
-    image: "https://placehold.co/80x40.png",
-    dataAiHint: "honda cr-v"
-  },
-  {
-    model: "Audi A6 2021",
-    totalRun: "18,647 Km",
-    condition: "Need Servicing",
-    price: "$54,900",
-    image: "https://placehold.co/80x40.png",
-    dataAiHint: "audi a6"
-  },
-  {
-    model: "Audi Q3 2019",
-    totalRun: "35,000 Km",
-    condition: "Great",
-    price: "$35,695",
-    image: "https://placehold.co/80x40.png",
-    dataAiHint: "audi q3"
-  },
-  {
-    model: "Mercedes-Benz C-Class 2019",
-    totalRun: "12,520 Km",
-    condition: "Excellent",
-    price: "$52,000",
-    image: "https://placehold.co/80x40.png",
-    dataAiHint: "mercedes c-class"
-  },
-];
-
-const ongoingService = {
-  isSerivceInProgress: true, // set to false to hide the section
-  id: "SRV001",
-  carModel: "Toyota Supra GR",
-  service: "ECU Tunning",
-  progress: 65,
-  image: "https://placehold.co/150x100.png",
-  dataAiHint: "white toyota supra"
-};
+// MOCK DATA: Import mock data. Replace with your actual data fetching logic.
+import { hotCollections, regularCollections, ongoingService } from "@/lib/constants";
 
 
 export default function DashboardPage() {
+  // TODO: In a real application, you would fetch this data from your backend.
+  // For example:
+  // const [hotCollections, setHotCollections] = useState([]);
+  // useEffect(() => {
+  //   fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/cars/hot`)
+  //     .then(res => res.json())
+  //     .then(data => setHotCollections(data));
+  // }, []);
+
   return (
     <div className="bg-background text-foreground min-h-screen p-8">
       <header className="flex justify-between items-center mb-10">
@@ -101,6 +38,10 @@ export default function DashboardPage() {
         </div>
       </header>
 
+      {/* 
+        This section should only be visible if there is an ongoing service.
+        You will need to fetch the user's active services from your backend.
+      */}
       {ongoingService.isSerivceInProgress && (
         <section className="mb-12">
             <h2 className="text-2xl font-bold mb-4">Ongoing Service</h2>
@@ -118,6 +59,7 @@ export default function DashboardPage() {
                             <span>{ongoingService.progress}% Complete</span>
                         </div>
                     </div>
+                     {/* This link navigates to the services page and passes parameters to show the specific service details */}
                      <Button variant="outline" className="rounded-full self-start" asChild>
                         <Link href={`/services?tab=active&serviceId=${ongoingService.id}`}>
                             View Details <ArrowRight className="ml-2 h-4 w-4"/>

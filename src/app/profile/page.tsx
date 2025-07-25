@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -10,6 +11,8 @@ import React, { useState, useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { CustomizationState } from "@/components/customization/CustomizationWorkspace";
+// MOCK DATA: Import mock data. Replace with your actual data fetching logic.
+import { user as mockUser, mockBuilds } from "@/lib/constants";
 
 
 interface Build extends CustomizationState {
@@ -22,39 +25,32 @@ export default function ProfilePage() {
   const { toast } = useToast();
   const [builds, setBuilds] = useState<Build[]>([]);
   const [isLoadingBuilds, setIsLoadingBuilds] = useState(true);
-
-  const user = {
-    _id: "user123", // Dummy user ID
-    name: "Jeff Reeves",
-    email: "jeff.reeves@example.com",
-    phone: "+1 234 567 890",
-    location: "San Francisco, CA",
-    avatarUrl: "https://placehold.co/128x128.png",
-    bio: "Car enthusiast and professional modifier. Passionate about creating unique and high-performance vehicles.",
-    buildsCount: 5,
-    followers: 1250,
-    following: 340,
-  };
+  
+  // MOCK DATA: Using mock user data. In a real app, this would come from an auth context/hook.
+  const user = mockUser;
 
   useEffect(() => {
     const fetchBuilds = async () => {
       setIsLoadingBuilds(true);
       try {
-        // In a real app, you'd get the user ID from your auth context
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/builds/${user._id}`);
+        // TODO: Replace this with an actual API call to your backend.
+        // In a real app, you'd get the user ID from your auth context.
+        // const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/builds/${user._id}`);
+        // if (!response.ok) {
+        //   throw new Error("Failed to fetch builds.");
+        // }
+        // const data = await response.json();
+        // setBuilds(data);
         
-        if (!response.ok) {
-          // Mock data for demonstration since the endpoint doesn't exist
-           const mockBuilds: Build[] = [
-            { _id: '1', carModel: 'Toyota Supra GR', color: '#FF0000', parts: { wheels: true, spoiler: true, bodykit: false, exhaust: true }, createdAt: new Date().toISOString() },
-            { _id: '2', carModel: 'Toyota Supra GR', color: '#0000FF', parts: { wheels: true, spoiler: false, bodykit: true, exhaust: false }, createdAt: new Date().toISOString() },
-           ];
+        // Using mock data for demonstration.
+        // The API call was commented out, so we use mockBuilds directly.
+        // When you implement the backend, you can remove the line below.
+        if (true) { // This is just to simulate a successful fetch for now
            setBuilds(mockBuilds);
+        } else {
            throw new Error("Failed to fetch builds. Displaying mock data.");
         }
 
-        const data = await response.json();
-        setBuilds(data);
       } catch (error: any) {
         toast({
           variant: "destructive",
@@ -65,7 +61,11 @@ export default function ProfilePage() {
         setIsLoadingBuilds(false);
       }
     };
-    fetchBuilds();
+    
+    // We check for user._id before fetching, as it would be needed for the API call
+    if(user._id) {
+      fetchBuilds();
+    }
   }, [toast, user._id]);
 
 

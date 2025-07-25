@@ -34,7 +34,18 @@ export function Nav() {
     return (
         <TooltipProvider>
             <nav className="fixed left-0 top-0 z-50 flex h-full flex-col items-center justify-between w-24 bg-sidebar text-sidebar-foreground p-4 rounded-r-3xl">
-                <div className="flex flex-col items-center gap-8 pt-4">
+                <div className="flex flex-col items-center gap-8">
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Link href="/" className="flex flex-col items-center gap-2 text-sidebar-primary">
+                                <div className="bg-primary text-primary-foreground p-3 rounded-lg">
+                                    <Wrench className="h-6 w-6" />
+                                </div>
+                                <span className="sr-only">Apex Auto Mods</span>
+                            </Link>
+                        </TooltipTrigger>
+                        <TooltipContent side="right">Apex Auto Mods</TooltipContent>
+                    </Tooltip>
                     <div className="flex flex-col items-center gap-4">
                         {navLinks.map((link) => {
                             const Icon = link.icon;
@@ -82,3 +93,5 @@ export function Nav() {
         </TooltipProvider>
     );
 }
+
+    

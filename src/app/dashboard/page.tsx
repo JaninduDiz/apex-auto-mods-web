@@ -36,11 +36,9 @@ export default function DashboardPage() {
   return (
     <div className="bg-background text-foreground min-h-screen p-8">
       <header className="flex justify-between items-center mb-10">
-        <div className="flex items-center gap-4">
-            <Link href="/" className="flex items-center gap-2">
-                <Wrench className="h-6 w-6 text-primary" />
-                <span className="font-bold text-lg">Apex Auto Mods</span>
-            </Link>
+        <div>
+          <h1 className="text-2xl font-bold">Good morning, Jeff!</h1>
+          <p className="text-muted-foreground">Welcome back to your garage.</p>
         </div>
         <div className="relative w-1/3">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
@@ -170,5 +168,7 @@ export default function DashboardPage() {
     </div>
   );
 }
+
+    
 
     

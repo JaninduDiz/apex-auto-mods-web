@@ -48,7 +48,7 @@ export default function DashboardPage() {
     <div className="bg-background text-foreground min-h-screen p-4 md:p-8 pb-20 md:pb-8">
       <header className="flex justify-between items-center mb-10">
         <div>
-          <h1 className="text-2xl font-bold">Good morning, {user?.name.split(' ')[0]}!</h1>
+          <h1 className="text-2xl font-bold">Good morning{user ? `, ${user.name.split(' ')[0]}` : ''}!</h1>
           <p className="text-muted-foreground">Welcome back to your garage.</p>
         </div>
         <div className="relative w-1/3 hidden md:block">

@@ -9,8 +9,10 @@ The first and most crucial step is to tell the Next.js application where your ba
 -   **File**: `.env`
 -   **Variable**: `NEXT_PUBLIC_API_BASE_URL`
 -   **Action**: Update this variable with the full URL of your deployed or local backend server.
-    -   Example for local development: `NEXT_PUBLIC_API_BASE_URL=http://localhost:3001/api`
-    -   Example for production: `NEXT_PUBLIC_API_BASE_URL=https://your-api.yourdomain.com/api`
+    -   Example for local development: `NEXT_PUBLIC_API_BASE_URL=http://localhost:3001`
+    -   Example for production: `NEXT_PUBLIC_API_BASE_URL=https://your-api.yourdomain.com`
+    
+    _Note: The frontend will automatically prefix this with `/api`_
 
 ## 2. API Endpoint Implementation
 
@@ -23,7 +25,7 @@ Your Node.js backend needs to implement the following endpoints. The frontend is
 **Password Hashing:** Use **bcrypt** to hash user passwords before storing them in the database.
 
 **A. Register New User**
--   **Endpoint**: `POST /auth/register`
+-   **Endpoint**: `POST /api/auth/register`
 -   **Request Body (JSON)**:
     ```json
     {
@@ -32,19 +34,14 @@ Your Node.js backend needs to implement the following endpoints. The frontend is
       "password": "String"
     }
     ```
--   **Backend Logic**:
-    1.  Validate the input.
-    2.  Check if a user with the given email already exists.
-    3.  Hash the `password` using bcrypt.
-    4.  Create a new user in your `users` collection/table.
-    5.  Return a success message.
+-   **Backend Logic**: Validate input, check for existing user, hash password, create new user.
 -   **Success Response (201 Created)**:
     ```json
     { "message": "User registered successfully" }
     ```
 
 **B. Login User**
--   **Endpoint**: `POST /auth/login`
+-   **Endpoint**: `POST /api/auth/login`
 -   **Request Body (JSON)**:
     ```json
     {
@@ -52,38 +49,30 @@ Your Node.js backend needs to implement the following endpoints. The frontend is
       "password": "String"
     }
     ```
--   **Backend Logic**:
-    1.  Find the user by `email`.
-    2.  If the user exists, compare the provided `password` with the stored hash using `bcrypt.compare()`.
-    3.  If the password is correct, generate a JWT containing the user's ID (`userId`).
-    4.  Return the JWT to the client.
+-   **Backend Logic**: Find user by email, compare password hash, generate JWT.
 -   **Success Response (200 OK)**:
     ```json
     { "token": "your_generated_jwt_string" }
     ```
 
-### Data Endpoints
-
-**A. List Services**
--   **Endpoint**: `GET /services`
--   **Request Body**: None
--   **Backend Logic**: Fetch all documents/rows from your `services` collection/table.
+**C. Get User Profile (Authenticated)**
+-   **Endpoint**: `GET /api/auth/profile`
+-   **Headers**: `Authorization: Bearer <token>`
+-   **Backend Logic**: Verify JWT, fetch user data from the database.
 -   **Success Response (200 OK)**:
     ```json
-    [
-      {
-        "id": "String",
-        "name": "String",
-        "description": "String",
-        "price": "String"
-      },
-      ...
-    ]
+    {
+      "id": "String",
+      "name": "String",
+      "email": "String"
+    }
     ```
 
-**B. Save a New Car Customization (Authenticated)**
--   **Endpoint**: `POST /builds`
--   **Headers**: Must include `Authorization: Bearer <token>`
+### Build Endpoints
+
+**A. Create a New Build (Authenticated)**
+-   **Endpoint**: `POST /api/builds`
+-   **Headers**: `Authorization: Bearer <token>`
 -   **Request Body (JSON)**:
     ```json
     {
@@ -92,22 +81,14 @@ Your Node.js backend needs to implement the following endpoints. The frontend is
       "selectedParts": ["String"]
     }
     ```
--   **Backend Logic**:
-    1.  Verify the JWT to get the authenticated `userId`.
-    2.  Create a new document/row in your `builds` collection/table, associating it with the `userId`.
-    3.  Set `createdAt` to the current timestamp.
 -   **Success Response (201 Created)**:
     ```json
     { "message": "Build saved successfully", "buildId": "new_build_id" }
     ```
 
-**C. Get Saved Builds for a User (Authenticated)**
--   **Endpoint**: `GET /builds/:userId`
--   **Headers**: Must include `Authorization: Bearer <token>`.
--   **URL Parameter**: `userId` of the user whose builds are being requested.
--   **Backend Logic**:
-    1.  Verify JWT.
-    2.  Find all builds in the `builds` collection/table where `userId` matches the parameter.
+**B. Get All User Builds (Authenticated)**
+-   **Endpoint**: `GET /api/builds`
+-   **Headers**: `Authorization: Bearer <token>`
 -   **Success Response (200 OK)**:
     ```json
     [
@@ -118,18 +99,90 @@ Your Node.js backend needs to implement the following endpoints. The frontend is
         "color": "String",
         "selectedParts": ["String"],
         "createdAt": "ISOStringDate"
-      },
-      ...
+      }
     ]
     ```
 
-**D. Get User Vehicles (Authenticated)**
--   **Endpoint**: `GET /vehicles/:userId`
--   **Headers**: Must include `Authorization: Bearer <token>`.
--   **URL Parameter**: `userId` of the user whose vehicles are being requested.
--   **Backend Logic**:
-    1.  Verify JWT.
-    2.  Find all vehicles in the `user_vehicles` collection/table where `userId` matches the parameter.
+**C. Get a Specific Build (Authenticated)**
+-   **Endpoint**: `GET /api/builds/:id`
+-   **Headers**: `Authorization: Bearer <token>`
+-   **Success Response (200 OK)**: (Same structure as GET /api/builds)
+
+**D. Update a Build (Authenticated)**
+-   **Endpoint**: `PUT /api/builds/:id`
+-   **Headers**: `Authorization: Bearer <token>`
+-   **Request Body (JSON)**: (Same as POST /api/builds)
+-   **Success Response (200 OK)**:
+    ```json
+    { "message": "Build updated successfully" }
+    ```
+
+**E. Delete a Build (Authenticated)**
+-   **Endpoint**: `DELETE /api/builds/:id`
+-   **Headers**: `Authorization: Bearer <token>`
+-   **Success Response (200 OK)**:
+    ```json
+    { "message": "Build deleted successfully" }
+    ```
+
+### Service Endpoints
+
+**A. Create a Service (Admin only - example)**
+-   **Endpoint**: `POST /api/services`
+-   **Success Response (201 Created)**: (Returns the newly created service)
+
+**B. Get All Services**
+-   **Endpoint**: `GET /api/services`
+-   **Success Response (200 OK)**:
+    ```json
+    [
+      {
+        "id": "String",
+        "name": "String",
+        "description": "String",
+        "price": "String"
+      }
+    ]
+    ```
+
+**C. Get a Specific Service**
+-   **Endpoint**: `GET /api/services/:id`
+-   **Success Response (200 OK)**: (Returns a single service object)
+
+**D. Update a Service (Admin only - example)**
+-   **Endpoint**: `PUT /api/services/:id`
+-   **Success Response (200 OK)**: (Returns the updated service)
+
+**E. Delete a Service (Admin only - example)**
+-   **Endpoint**: `DELETE /api/services/:id`
+-   **Success Response (200 OK)**:
+    ```json
+    { "message": "Service deleted successfully" }
+    ```
+
+### Vehicle Endpoints
+
+**A. Add a User Vehicle (Authenticated)**
+-   **Endpoint**: `POST /api/vehicles`
+-   **Headers**: `Authorization: Bearer <token>`
+-   **Request Body (JSON)**:
+    ```json
+    {
+      "make": "String",
+      "carModel": "String",
+      "color": "String",
+      "year": "Number",
+      "odoRead": "String"
+    }
+    ```
+-   **Success Response (201 Created)**:
+    ```json
+    { "message": "Vehicle added successfully", "vehicleId": "new_vehicle_id" }
+    ```
+
+**B. Get All User Vehicles (Authenticated)**
+-   **Endpoint**: `GET /api/vehicles`
+-   **Headers**: `Authorization: Bearer <token>`
 -   **Success Response (200 OK)**:
     ```json
     [
@@ -141,11 +194,24 @@ Your Node.js backend needs to implement the following endpoints. The frontend is
         "color": "String",
         "year": "Number",
         "odoRead": "String"
-      },
-      ...
+      }
     ]
     ```
 
+**C. Get a Specific Vehicle (Authenticated)**
+-   **Endpoint**: `GET /api/vehicles/:id`
+-   **Headers**: `Authorization: Bearer <token>`
+-   **Success Response (200 OK)**: (Returns a single vehicle object)
+
+**D. Update a Vehicle (Authenticated)**
+-   **Endpoint**: `PUT /api/vehicles/:id`
+-   **Headers**: `Authorization: Bearer <token>`
+-   **Request Body (JSON)**: (Same as POST /api/vehicles)
+-   **Success Response (200 OK)**:
+    ```json
+    { "message": "Vehicle updated successfully" }
+    ```
+    
 ## 3. Database Collections/Tables Schema
 
 Your MongoDB collections or SQL tables should be structured as follows.
@@ -197,10 +263,8 @@ Your MongoDB collections or SQL tables should be structured as follows.
 
 ## 4. Hardcoded Data
 
-For development and demonstration purposes, some data collections shown on the dashboard are currently hardcoded in the frontend (`src/lib/constants.ts`). In a production application, you would fetch this data from your database.
+For development and demonstration purposes, some data collections are currently hardcoded in the frontend (`src/lib/constants.ts`) and loaded via a state manager (`src/store/data-store.ts`). In a production application, you should replace the mock data fetching logic with actual API calls to your backend endpoints.
 
--   **Hot Collections**: The featured cars on the dashboard.
--   **Regular Collections**: The list of cars for sale.
--   **Active Services / Ongoing Service**: The service status for users.
-
-You can replace the mock data fetching logic in the Zustand store (`src/store/data-store.ts`) with your actual API calls.
+-   **Hot Collections & Regular Collections**: Fetch from `/api/vehicles` or a dedicated `/api/cars-for-sale` endpoint.
+-   **Active Services / Ongoing Service**: This would likely be derived from a `user_services` or similar collection that tracks services booked by users.
+-   **Available Services**: Fetch from `/api/services`.

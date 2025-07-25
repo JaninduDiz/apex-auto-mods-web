@@ -63,7 +63,7 @@ export default function CustomizePage() {
                             <CardContent className="flex-grow">
                                 <p className="text-sm text-muted-foreground font-medium">MODIFICATIONS</p>
                                 <p className="text-sm capitalize">
-                                    {Object.entries(build.parts).filter(([,v]) => v).map(([k]) => k).join(', ') || "Stock"}
+                                    {build.parts.join(', ') || "Stock"}
                                 </p>
                             </CardContent>
                             <div className="p-6 pt-0">

@@ -14,7 +14,7 @@ export type Part = "wheels" | "spoiler" | "bodykit" | "exhaust";
 
 export interface CustomizationState {
   color: string;
-  parts: Record<Part, boolean>;
+  parts: Part[];
 }
 
 export default function CustomizationWorkspacePage() {
@@ -27,12 +27,7 @@ export default function CustomizationWorkspacePage() {
 
   const [customization, setCustomization] = useState<CustomizationState>({
     color: "#3F51B5",
-    parts: {
-      wheels: false,
-      spoiler: false,
-      bodykit: false,
-      exhaust: false,
-    },
+    parts: [],
   });
   
   const [carModel, setCarModel] = useState("Toyota Supra GR"); // Default model

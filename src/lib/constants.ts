@@ -1,6 +1,6 @@
 
 import { Wrench, Car, ShieldCheck } from "lucide-react";
-import { CustomizationState } from "@/app/customize/[id]/page";
+import { type Part } from "@/app/customize/[id]/page";
 
 // --- TYPES ---
 
@@ -18,9 +18,11 @@ export interface ActiveService extends Service {
     progress: number;
 }
 
-export interface Build extends CustomizationState {
+export interface Build {
   _id: string;
   carModel: string;
+  color: string;
+  parts: Part[];
   createdAt: string;
 }
 
@@ -32,8 +34,6 @@ export interface HotCollection {
     image: string;
     price: string;
     dataAiHint: string;
-    bgColorClass: string;
-    borderColorClass: string;
     details: { type: string, value: string, label: string }[];
     totalRun: string;
 }
@@ -68,8 +68,6 @@ export const hotCollections: HotCollection[] = [
     image: "https://placehold.co/300x200.png",
     price: "$38,700",
     dataAiHint: "orange range rover evoque convertible",
-    bgColorClass: "bg-orange-50",
-    borderColorClass: "border-orange-200",
     details: [
       { type: "CC", value: "1997 CC", label: "Engine" },
       { type: "BHP", value: "246.74 BHP", label: "Horsepower" },
@@ -86,8 +84,6 @@ export const hotCollections: HotCollection[] = [
     image: "https://placehold.co/300x200.png",
     price: "$187,900",
     dataAiHint: "white nissan gtr",
-    bgColorClass: "bg-slate-50",
-    borderColorClass: "border-slate-200",
     details: [
       { type: "CC", value: "3799 CC", label: "Engine" },
       { type: "BHP", value: "591.4 BHP", label: "Horsepower" },
@@ -292,7 +288,7 @@ export const user = {
 };
 
 export const mockBuilds: Build[] = [
-    { _id: 'build-1', carModel: 'Toyota Supra GR', color: '#FF0000', parts: { wheels: true, spoiler: true, bodykit: false, exhaust: true }, createdAt: '2023-10-26T10:00:00Z' },
-    { _id: 'build-2', carModel: 'Nissan GTR R35', color: '#0000FF', parts: { wheels: true, spoiler: false, bodykit: true, exhaust: false }, createdAt: '2023-10-25T14:30:00Z' },
-    { _id: 'build-3', carModel: 'Range Rover Evoque', color: '#FFA500', parts: { wheels: true, spoiler: false, bodykit: false, exhaust: true }, createdAt: '2023-09-15T11:00:00Z' },
+    { _id: 'build-1', carModel: 'Toyota Supra GR', color: '#FF0000', parts: ['wheels', 'spoiler', 'exhaust'], createdAt: '2023-10-26T10:00:00Z' },
+    { _id: 'build-2', carModel: 'Nissan GTR R35', color: '#0000FF', parts: ['wheels', 'bodykit'], createdAt: '2023-10-25T14:30:00Z' },
+    { _id: 'build-3', carModel: 'Range Rover Evoque', color: '#FFA500', parts: ['wheels', 'exhaust'], createdAt: '2023-09-15T11:00:00Z' },
 ];

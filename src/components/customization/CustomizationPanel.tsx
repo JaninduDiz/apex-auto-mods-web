@@ -36,10 +36,12 @@ export function CustomizationPanel({
   };
 
   const handlePartToggle = (part: Part) => {
-    setCustomization(prev => ({
-      ...prev,
-      parts: { ...prev.parts, [part]: !prev.parts[part] },
-    }));
+    setCustomization(prev => {
+      const newParts = prev.parts.includes(part)
+        ? prev.parts.filter(p => p !== part)
+        : [...prev.parts, part];
+      return { ...prev, parts: newParts };
+    });
   };
 
   return (
@@ -89,7 +91,7 @@ export function CustomizationPanel({
               <div key={part.id} className="flex items-center space-x-2">
                 <Checkbox
                   id={part.id}
-                  checked={customization.parts[part.id]}
+                  checked={customization.parts.includes(part.id)}
                   onCheckedChange={() => handlePartToggle(part.id)}
                 />
                 <Label htmlFor={part.id} className="cursor-pointer">{part.label}</Label>

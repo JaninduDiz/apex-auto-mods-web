@@ -154,7 +154,7 @@ export default function ProfilePage() {
                     <div className="flex-1">
                       <p className="font-bold">{build.carModel}</p>
                       <p className="text-sm text-muted-foreground capitalize">
-                        {Object.entries(build.parts).filter(([,v]) => v).map(([k]) => k).join(', ') || "No extra parts"}
+                        {build.parts.join(', ') || "No extra parts"}
                       </p>
                       <p className="text-xs text-muted-foreground mt-1">Saved on {new Date(build.createdAt).toLocaleDateString()}</p>
                     </div>

@@ -19,7 +19,7 @@ export function CarPreview({ customization }: { customization: CustomizationStat
             priority
           />
           
-          {customization.parts.wheels && (
+          {customization.parts.includes("wheels") && (
             <>
               <Image
                 src="https://placehold.co/120x120/transparent.png"
@@ -40,7 +40,7 @@ export function CarPreview({ customization }: { customization: CustomizationStat
             </>
           )}
 
-          {customization.parts.spoiler && (
+          {customization.parts.includes("spoiler") && (
             <Image
               src="https://placehold.co/200x80/transparent.png"
               data-ai-hint="car spoiler black"
@@ -51,7 +51,7 @@ export function CarPreview({ customization }: { customization: CustomizationStat
             />
           )}
 
-          {customization.parts.bodykit && (
+          {customization.parts.includes("bodykit") && (
             <Image
               src="https://placehold.co/600x60/transparent.png"
               data-ai-hint="side skirt black"
@@ -62,7 +62,7 @@ export function CarPreview({ customization }: { customization: CustomizationStat
             />
           )}
           
-          {customization.parts.exhaust && (
+          {customization.parts.includes("exhaust") && (
              <Image
               src="https://placehold.co/50x30/transparent.png"
               data-ai-hint="car exhaust pipe chrome"

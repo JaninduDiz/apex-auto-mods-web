@@ -27,7 +27,7 @@ interface DataState {
     fetchServices: () => Promise<void>;
     getBuildById: (id: string) => Build | undefined;
     getActiveServiceById: (id: string) => ActiveService | undefined;
-    saveBuild: (build: Build) => Promise<void>;
+    saveBuild: (build: Omit<Build, 'createdAt'> & { createdAt?: string }) => Promise<void>;
 }
 
 const useDataStore = create<DataState>((set, get) => ({
@@ -71,20 +71,25 @@ const useDataStore = create<DataState>((set, get) => ({
         return get().activeServices.find(service => service.id === id);
     },
     
-    saveBuild: async (buildToSave: Build) => {
+    saveBuild: async (buildToSave) => {
         set({ isLoading: true });
         await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API delay
         
         set(state => {
             const existingBuildIndex = state.builds.findIndex(b => b._id === buildToSave._id);
             let updatedBuilds = [...state.builds];
+            
+            const finalBuild: Build = {
+                ...buildToSave,
+                createdAt: buildToSave.createdAt || new Date().toISOString()
+            }
 
             if (existingBuildIndex > -1) {
                 // Update existing build
-                updatedBuilds[existingBuildIndex] = buildToSave;
+                updatedBuilds[existingBuildIndex] = finalBuild;
             } else {
                 // Add new build
-                updatedBuilds.push(buildToSave);
+                updatedBuilds.push(finalBuild);
             }
             // In a real app, you might re-fetch or just update the state
             return { builds: updatedBuilds, isLoading: false };

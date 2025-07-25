@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import React from "react";
 // MOCK DATA: Import mock data. Replace with your actual data fetching logic.
-import { hotCollections, regularCollections, ongoingService } from "@/lib/constants";
+import { hotCollections, ongoingService, regularCollections } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { useUserStore } from "@/store/user-store";
 
@@ -34,6 +34,13 @@ export default function DashboardPage() {
   //     .then(res => res.json())
   //     .then(data => setHotCollections(data));
   // }, []);
+
+  const detailColors = [
+      "bg-orange-100",
+      "bg-blue-100",
+      "bg-yellow-100",
+      "bg-violet-100",
+  ];
 
   return (
     <div className="bg-background text-foreground min-h-screen p-4 md:p-8 pb-20 md:pb-8">
@@ -106,14 +113,14 @@ export default function DashboardPage() {
                         {car.details.map((detail, detailIdx) => {
                         const Icon = iconMap[detail.type];
                         return (
-                            <div key={detail.value} className={cn("rounded-2xl p-4 flex flex-col items-center justify-center text-center", detail.bgColorClass)}>
+                            <div key={detail.value} className={cn("rounded-2xl p-4 flex flex-col items-center justify-center text-center", detailColors[detailIdx % detailColors.length])}>
                                 {Icon && <Icon className="h-6 w-6 mb-2 text-muted-foreground" />}
                                 <p className="text-sm font-semibold">{detail.value}</p>
                             </div>
                         )
                         })}
                     </div>
-                     <div className={cn("rounded-2xl p-4 flex items-center justify-center text-center gap-2", car.totalRunBgColorClass)}>
+                     <div className="rounded-2xl p-4 flex items-center justify-center text-center gap-2 bg-green-200">
                         <Gauge className="h-6 w-6"/>
                         <p className="text-sm font-semibold">Total Run: {car.totalRun}</p>
                     </div>

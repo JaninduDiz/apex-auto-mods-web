@@ -1,17 +1,25 @@
 
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Wrench, Car, Clock, ShieldCheck, ArrowRight } from "lucide-react";
+import { Wrench, Car, Clock, ShieldCheck, ArrowRight, Loader2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { Skeleton } from '@/components/ui/skeleton';
 
-const services = [
+interface Service {
+  name: string;
+  description: string;
+  price: string;
+  icon: React.ElementType;
+}
+
+const staticServices = [
   {
     name: "ECU Tunning",
     description: "Unlock your car's true potential with our custom ECU tunes. More power, better fuel economy.",
@@ -34,13 +42,13 @@ const services = [
     name: "Custom Body Kits",
     description: "Transform the look of your car with our wide selection of body kits. Professional installation.",
     price: "Contact for quote",
-    icon: Wrench,
+    icon: Car,
   },
   {
     name: "Vinyl Wraps & Paint Protection",
     description: "Change your car's color with a custom vinyl wrap or protect your paint with our PPF services.",
     price: "Starting from $2000",
-    icon: Wrench,
+    icon: ShieldCheck,
   },
   {
     name: "Wheel & Tire Packages",
@@ -49,6 +57,7 @@ const services = [
     icon: Wrench,
   },
 ];
+
 
 const activeServices = [
     {
@@ -68,17 +77,50 @@ const activeServices = [
 ]
 
 export default function ServicesPage() {
+  const [services, setServices] = useState<Service[]>([]);
+  const [isLoadingServices, setIsLoadingServices] = useState(true);
   const [isBooking, setIsBooking] = useState(false);
-  const [selectedService, setSelectedService] = useState<{name: string, price: string} | null>(null);
+  const [selectedService, setSelectedService] = useState<Service | null>(null);
   const { toast } = useToast();
 
-  const handleBookClick = (service: {name: string, price: string}) => {
+  useEffect(() => {
+    const fetchServices = async () => {
+      setIsLoadingServices(true);
+      try {
+        // In a real app, you'd fetch from your backend API
+        // const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/services`);
+        // if (!response.ok) {
+        //   throw new Error('Failed to fetch services');
+        // }
+        // const data = await response.json();
+        // setServices(data.map((s: any) => ({...s, icon: Wrench}))); // Assuming a default icon
+        
+        // For now, using static data
+        setServices(staticServices);
+
+      } catch (error) {
+        console.error(error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Could not fetch services. Displaying static data."
+        })
+        setServices(staticServices);
+      } finally {
+        setIsLoadingServices(false);
+      }
+    };
+    fetchServices();
+  }, [toast]);
+
+  const handleBookClick = (service: Service) => {
     setSelectedService(service);
     setIsBooking(true);
   }
 
   const handleBookingSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    // Here you would make a POST request to your backend to create a booking
     setIsBooking(false);
     toast({
       title: "Booking Confirmed!",
@@ -95,27 +137,46 @@ export default function ServicesPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {services.map((service) => (
-          <Card key={service.name} className="flex flex-col">
-            <CardHeader className="flex flex-row items-start gap-4 pb-4">
-              <div className="bg-primary/10 p-3 rounded-full">
-                <service.icon className="w-6 h-6 text-primary" />
-              </div>
-              <div>
-                <CardTitle>{service.name}</CardTitle>
-                <CardDescription className="mt-1">{service.description}</CardDescription>
-              </div>
-            </CardHeader>
-            <CardContent className="flex-grow flex flex-col justify-end">
-              <div className="flex justify-between items-center mt-4">
-                <p className="font-semibold text-primary">{service.price}</p>
-                <Button onClick={() => handleBookClick(service)}>Book Now</Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      {isLoadingServices ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <Card key={index}>
+              <CardHeader className="flex flex-row items-start gap-4 pb-4">
+                <Skeleton className="w-12 h-12 rounded-full" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-6 w-3/4" />
+                  <Skeleton className="h-4 w-full" />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-10 w-1/2 ml-auto" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {services.map((service) => (
+            <Card key={service.name} className="flex flex-col">
+              <CardHeader className="flex flex-row items-start gap-4 pb-4">
+                <div className="bg-primary/10 p-3 rounded-full">
+                  <service.icon className="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                  <CardTitle>{service.name}</CardTitle>
+                  <CardDescription className="mt-1">{service.description}</CardDescription>
+                </div>
+              </CardHeader>
+              <CardContent className="flex-grow flex flex-col justify-end">
+                <div className="flex justify-between items-center mt-4">
+                  <p className="font-semibold text-primary">{service.price}</p>
+                  <Button onClick={() => handleBookClick(service)}>Book Now</Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
 
       <section className="mt-20">
         <h2 className="text-3xl font-bold text-center mb-10">Your Active Services</h2>

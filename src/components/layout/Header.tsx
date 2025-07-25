@@ -1,52 +1,91 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Wrench } from "lucide-react";
-import { usePathname } from 'next/navigation'
+import { usePathname } from 'next/navigation';
 import { cn } from "@/lib/utils";
+import { 
+  Sidebar, 
+  SidebarHeader, 
+  SidebarContent, 
+  SidebarMenu, 
+  SidebarMenuItem, 
+  SidebarMenuButton, 
+  SidebarFooter,
+  useSidebar
+} from "@/components/ui/sidebar";
+import { 
+  Wrench, 
+  LayoutDashboard, 
+  Car, 
+  Settings, 
+  User,
+  LogIn,
+  UserPlus
+} from "lucide-react";
+import { Button } from "../ui/button";
 
 export function Header() {
-  const pathname = usePathname()
+  const pathname = usePathname();
+  const { state } = useSidebar();
 
   const navLinks = [
-    { href: "/", label: "Dashboard" },
-    { href: "/customize", label: "Customize" },
-    { href: "/services", label: "Services" },
+    { href: "/", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/customize", label: "Customize", icon: Car },
+    { href: "/services", label: "Services", icon: Settings },
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 items-center">
-        <div className="mr-4 flex items-center">
-          <Link href="/" className="mr-6 flex items-center space-x-2">
-            <Wrench className="h-6 w-6 text-primary" />
-            <span className="font-bold">Apex Configurator</span>
-          </Link>
-          <nav className="flex items-center space-x-6 text-sm font-medium">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={cn(
-                  "transition-colors hover:text-foreground/80",
-                  pathname === link.href ? "text-foreground" : "text-foreground/60"
-                )}
-              >
-                {link.label}
+    <Sidebar collapsible="icon">
+      <SidebarHeader>
+        <Link href="/" className="flex items-center gap-2">
+          <Wrench className="h-6 w-6 text-primary" />
+          {state === 'expanded' && <span className="font-bold">Apex Configurator</span>}
+        </Link>
+      </SidebarHeader>
+      <SidebarContent>
+        <SidebarMenu>
+          {navLinks.map((link) => (
+            <SidebarMenuItem key={link.href}>
+              <Link href={link.href} passHref>
+                <SidebarMenuButton
+                  asChild
+                  isActive={pathname === link.href}
+                  tooltip={link.label}
+                >
+                  <a>
+                    <link.icon />
+                    <span>{link.label}</span>
+                  </a>
+                </SidebarMenuButton>
               </Link>
-            ))}
-          </nav>
-        </div>
-        <div className="flex flex-1 items-center justify-end space-x-2">
-          <Button asChild>
-            <Link href="/login">Login</Link>
-          </Button>
-          <Button variant="outline" asChild>
-            <Link href="/register">Sign Up</Link>
-          </Button>
-        </div>
-      </div>
-    </header>
+            </SidebarMenuItem>
+          ))}
+        </SidebarMenu>
+      </SidebarContent>
+      <SidebarFooter>
+         <SidebarMenu>
+            <SidebarMenuItem>
+                <Link href="/login" passHref>
+                    <SidebarMenuButton asChild tooltip="Login">
+                        <a>
+                            <LogIn />
+                            <span>Login</span>
+                        </a>
+                    </SidebarMenuButton>
+                </Link>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+                <Link href="/register" passHref>
+                    <SidebarMenuButton asChild tooltip="Sign Up">
+                        <a>
+                            <UserPlus />
+                            <span>Sign Up</span>
+                        </a>
+                    </SidebarMenuButton>
+                </Link>
+            </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
+    </Sidebar>
   );
 }

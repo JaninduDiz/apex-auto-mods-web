@@ -3,6 +3,7 @@ import './globals.css';
 import { Header } from "@/components/layout/Header";
 import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
+import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 
 export const metadata: Metadata = {
   title: 'Apex Configurator',
@@ -22,10 +23,12 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />
       </head>
       <body className={cn("font-body antialiased min-h-screen bg-background")}>
-        <div className="relative flex min-h-screen flex-col">
+        <SidebarProvider defaultOpen={false}>
           <Header />
-          <main className="flex-1">{children}</main>
-        </div>
+          <SidebarInset>
+            <main className="flex-1">{children}</main>
+          </SidebarInset>
+        </SidebarProvider>
         <Toaster />
       </body>
     </html>

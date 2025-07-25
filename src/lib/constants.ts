@@ -37,12 +37,12 @@ export const hotCollections = [
     dataAiHint: "orange range rover evoque convertible",
     bgColorClass: "bg-orange-50",
     borderColorClass: "border-orange-200",
-    totalRunBgColorClass: "bg-white",
+    totalRunBgColorClass: "bg-green-200",
     details: [
       { type: "CC", value: "1997 CC", label: "Engine", bgColorClass: "bg-orange-100" },
-      { type: "BHP", value: "246.74 BHP", label: "Horsepower", bgColorClass: "bg-lime-100" },
+      { type: "BHP", value: "246.74 BHP", label: "Horsepower", bgColorClass: "bg-blue-100" },
       { type: "Speed", value: "6 Speed", label: "Transmission", bgColorClass: "bg-yellow-100" },
-      { type: "Cylinder", value: "4 Cylinder", label: "Cylinders", bgColorClass: "bg-slate-200" },
+      { type: "Cylinder", value: "4 Cylinder", label: "Cylinders", bgColorClass: "bg-violet-100" },
     ],
     totalRun: "12,500 Km"
   },
@@ -59,9 +59,9 @@ export const hotCollections = [
     totalRunBgColorClass: "bg-green-200",
     details: [
       { type: "CC", value: "3799 CC", label: "Engine", bgColorClass: "bg-orange-100" },
-      { type: "BHP", value: "591.4 BHP", label: "Horsepower", bgColorClass: "bg-lime-100" },
+      { type: "BHP", value: "591.4 BHP", label: "Horsepower", bgColorClass: "bg-blue-100" },
       { type: "Speed", value: "6 Speed", label: "Transmission", bgColorClass: "bg-yellow-100" },
-      { type: "Cylinder", value: "6 Cylinder", label: "Cylinders", bgColorClass: "bg-purple-200" },
+      { type: "Cylinder", value: "6 Cylinder", label: "Cylinders", bgColorClass: "bg-violet-100" },
     ],
     totalRun: "9,254 Km"
   }

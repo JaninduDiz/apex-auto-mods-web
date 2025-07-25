@@ -33,7 +33,6 @@ export interface HotCollection {
     logo: string;
     image: string;
     price: string;
-    dataAiHint: string;
     details: { type: string, value: string, label: string }[];
     totalRun: string;
 }
@@ -45,7 +44,6 @@ export interface RegularCollection {
     condition: string;
     price: string;
     image: string;
-    dataAiHint: string;
     year: number;
     details: {
         engine: string;
@@ -67,7 +65,6 @@ export const hotCollections: HotCollection[] = [
     logo: "https://placehold.co/40x40.png",
     image: "https://placehold.co/300x200.png",
     price: "$38,700",
-    dataAiHint: "orange range rover evoque convertible",
     details: [
       { type: "CC", value: "1997 CC", label: "Engine" },
       { type: "BHP", value: "246.74 BHP", label: "Horsepower" },
@@ -83,7 +80,6 @@ export const hotCollections: HotCollection[] = [
     logo: "https://placehold.co/40x40.png",
     image: "https://placehold.co/300x200.png",
     price: "$187,900",
-    dataAiHint: "white nissan gtr",
     details: [
       { type: "CC", value: "3799 CC", label: "Engine" },
       { type: "BHP", value: "591.4 BHP", label: "Horsepower" },
@@ -102,7 +98,6 @@ export const regularCollections: RegularCollection[] = [
     condition: "Great",
     price: "$30,450",
     image: "https://placehold.co/800x600.png",
-    dataAiHint: "honda cr-v",
     year: 2021,
     details: {
         engine: "1.5L Turbo",
@@ -123,7 +118,6 @@ export const regularCollections: RegularCollection[] = [
     condition: "Need Servicing",
     price: "$54,900",
     image: "https://placehold.co/800x600.png",
-    dataAiHint: "audi a6",
     year: 2021,
     details: {
         engine: "2.0L TFSI",
@@ -144,7 +138,6 @@ export const regularCollections: RegularCollection[] = [
     condition: "Great",
     price: "$35,695",
     image: "https://placehold.co/800x600.png",
-    dataAiHint: "audi q3",
     year: 2019,
      details: {
         engine: "2.0L TFSI",
@@ -165,7 +158,6 @@ export const regularCollections: RegularCollection[] = [
     condition: "Excellent",
     price: "$52,000",
     image: "https://placehold.co/800x600.png",
-    dataAiHint: "mercedes c-class",
     year: 2019,
     details: {
         engine: "2.0L I4 Turbo",
@@ -188,7 +180,6 @@ export const ongoingService = {
   service: "ECU Tunning",
   progress: 65,
   image: "https://placehold.co/150x100.png",
-  dataAiHint: "white toyota supra"
 };
 
 

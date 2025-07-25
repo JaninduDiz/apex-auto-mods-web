@@ -72,13 +72,13 @@ export default function DashboardPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                     <div className="flex flex-col gap-4">
                        <div className="flex items-center gap-4">
-                          <Image src={car.logo} data-ai-hint="car logo" width={40} height={40} alt="Car Logo" />
+                          <Image src={car.logo} width={40} height={40} alt="Car Logo" />
                           <div>
                               <h3 className="text-xl font-bold">{car.brand}</h3>
                               <p className="text-sm text-muted-foreground">{car.model}</p>
                           </div>
                       </div>
-                      <Image src={car.image} width={300} height={200} alt={car.name} data-ai-hint={car.dataAiHint} className="rounded-2xl object-cover w-full"/>
+                      <Image src={car.image} width={300} height={200} alt={car.name} className="rounded-2xl object-cover w-full"/>
                       <div>
                           <p className="text-xs text-muted-foreground">ASKING PRICE</p>
                           <p className="text-2xl font-bold">{car.price} <span className="text-sm font-normal text-muted-foreground">USD</span></p>
@@ -136,7 +136,7 @@ export default function DashboardPage() {
                         <tr key={car.id} className="block md:table-row">
                           <td className="p-4 md:p-6 whitespace-nowrap block md:table-cell" data-label="Car Model">
                             <div className="flex items-center gap-4">
-                              <Image src={car.image} width={80} height={50} alt={car.model} data-ai-hint={car.dataAiHint} className="rounded-lg object-cover"/>
+                              <Image src={car.image} width={80} height={50} alt={car.model} className="rounded-lg object-cover"/>
                               <span className="font-semibold">{car.model}</span>
                             </div>
                           </td>

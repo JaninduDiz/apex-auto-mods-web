@@ -33,7 +33,7 @@ interface DataState {
 const useDataStore = create<DataState>((set, get) => ({
     hotCollections: [],
     regularCollections: [],
-    ongoingService: { isSerivceInProgress: false, id: '', carModel: '', service: '', progress: 0, image: '', dataAiHint: '' },
+    ongoingService: { isSerivceInProgress: false, id: '', carModel: '', service: '', progress: 0, image: '' },
     builds: [],
     services: [],
     activeServices: [],

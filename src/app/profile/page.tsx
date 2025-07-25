@@ -66,14 +66,13 @@ export default function ProfilePage() {
         <CardHeader className="relative h-36 md:h-48 bg-gray-200 rounded-t-lg">
             <Image 
                 src="https://placehold.co/1024x300.png"
-                data-ai-hint="automotive garage background"
                 alt="Cover photo"
                 fill
                 className="object-cover rounded-t-lg"
             />
             <div className="absolute bottom-0 left-4 md:left-6 translate-y-1/2">
                 <Avatar className="w-24 h-24 md:w-32 md:h-32 border-4 border-background">
-                    <AvatarImage src={user.avatarUrl} alt={user.name} data-ai-hint="man avatar"/>
+                    <AvatarImage src={user.avatarUrl} alt={user.name} />
                     <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
                 </Avatar>
             </div>

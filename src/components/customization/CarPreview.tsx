@@ -12,7 +12,6 @@ export function CarPreview({ customization }: { customization: CustomizationStat
         >
           <Image
             src="https://placehold.co/800x450/ffffff/ffffff.png?text=%20"
-            data-ai-hint="white sports car side view"
             alt="Car base"
             fill
             className="object-contain drop-shadow-2xl"
@@ -23,7 +22,6 @@ export function CarPreview({ customization }: { customization: CustomizationStat
             <>
               <Image
                 src="https://placehold.co/120x120/transparent.png"
-                data-ai-hint="custom rim"
                 alt="Performance Wheels"
                 width={120}
                 height={120}
@@ -31,7 +29,6 @@ export function CarPreview({ customization }: { customization: CustomizationStat
               />
               <Image
                 src="https://placehold.co/120x120/transparent.png"
-                data-ai-hint="custom rim"
                 alt="Performance Wheels"
                 width={120}
                 height={120}
@@ -43,7 +40,6 @@ export function CarPreview({ customization }: { customization: CustomizationStat
           {customization.parts.includes("spoiler") && (
             <Image
               src="https://placehold.co/200x80/transparent.png"
-              data-ai-hint="car spoiler black"
               alt="Carbon Fiber Spoiler"
               width={200}
               height={80}
@@ -54,7 +50,6 @@ export function CarPreview({ customization }: { customization: CustomizationStat
           {customization.parts.includes("bodykit") && (
             <Image
               src="https://placehold.co/600x60/transparent.png"
-              data-ai-hint="side skirt black"
               alt="Body Kit"
               width={600}
               height={60}
@@ -65,7 +60,6 @@ export function CarPreview({ customization }: { customization: CustomizationStat
           {customization.parts.includes("exhaust") && (
              <Image
               src="https://placehold.co/50x30/transparent.png"
-              data-ai-hint="car exhaust pipe chrome"
               alt="Sport Exhaust"
               width={50}
               height={30}

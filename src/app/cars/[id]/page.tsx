@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { regularCollections } from '@/lib/constants';
-import { ArrowLeft, CheckCircle, Clock, Droplets, Gauge, GitBranch, Settings, Shield, Tag, User, XCircle } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Droplets, Gauge, GitBranch, Settings, Tag } from 'lucide-react';
 import Link from 'next/link';
 
 export default function CarDetailsPage() {
@@ -36,7 +36,6 @@ export default function CarDetailsPage() {
                         alt={car.model}
                         fill
                         className="object-cover"
-                        data-ai-hint={car.dataAiHint}
                     />
                 </div>
             </Card>
@@ -49,7 +48,6 @@ export default function CarDetailsPage() {
                                 alt={`${car.model} gallery image ${index + 1}`}
                                 fill
                                 className="object-cover"
-                                data-ai-hint={`${car.dataAiHint} interior`}
                             />
                         </div>
                     </Card>

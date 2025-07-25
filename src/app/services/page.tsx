@@ -146,7 +146,7 @@ function ServicesComponent() {
                   {ongoingService.isSerivceInProgress && (
                     <Card className="rounded-3xl shadow-lg bg-blue-50 border-blue-200">
                         <CardContent className="p-4 md:p-6 flex flex-col md:flex-row items-center gap-4 md:gap-6">
-                            <Image src={ongoingService.image} width={150} height={100} alt={ongoingService.carModel} data-ai-hint={ongoingService.dataAiHint} className="rounded-2xl object-cover w-full md:w-[150px]"/>
+                            <Image src={ongoingService.image} width={150} height={100} alt={ongoingService.carModel} className="rounded-2xl object-cover w-full md:w-[150px]"/>
                             <div className="flex-1 w-full">
                                 <div className="flex justify-between items-center mb-2">
                                     <h3 className="font-bold text-lg">{ongoingService.carModel}</h3>

@@ -90,7 +90,7 @@ export function Nav() {
                             <TooltipTrigger asChild>
                                 <Link href="/profile">
                                    <Avatar>
-                                        <AvatarImage src={user.avatarUrl} alt={user.name} data-ai-hint="man avatar"/>
+                                        <AvatarImage src={user.avatarUrl} alt={user.name} />
                                         <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
                                     </Avatar>
                                 </Link>

@@ -46,7 +46,6 @@ const useDataStore = create<DataState>((set, get) => ({
         set({
             hotCollections: mockHotCollections,
             regularCollections: mockRegularCollections,
-            ongoingService: mockOngoingService,
             isLoading: false,
         });
     },
@@ -60,7 +59,12 @@ const useDataStore = create<DataState>((set, get) => ({
     fetchServices: async () => {
         set({ isLoading: true });
         await new Promise(resolve => setTimeout(resolve, 500));
-        set({ services: staticServices, activeServices: mockActiveServices, isLoading: false });
+        set({ 
+            services: staticServices, 
+            activeServices: mockActiveServices, 
+            ongoingService: mockOngoingService,
+            isLoading: false 
+        });
     },
 
     getBuildById: (id: string) => {

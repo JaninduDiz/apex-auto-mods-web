@@ -29,7 +29,6 @@ export default function DashboardPage() {
   const { 
     hotCollections,
     regularCollections,
-    ongoingService,
     isLoading,
     fetchDashboardData 
   } = useDataStore();
@@ -57,37 +56,8 @@ export default function DashboardPage() {
           <Input placeholder="Search here" className="pl-10 rounded-full" />
         </div>
       </header>
-
-      {isLoading ? (
-        <Skeleton className="h-40 w-full rounded-3xl" />
-      ) : ongoingService.isSerivceInProgress && (
-        <section className="mb-12">
-            <h2 className="text-2xl font-bold mb-4">Ongoing Service</h2>
-            <Card className="rounded-3xl shadow-lg bg-blue-50 border-blue-200">
-                <CardContent className="p-4 md:p-6 flex flex-col md:flex-row items-center gap-4 md:gap-6">
-                    <Image src={ongoingService.image} width={150} height={100} alt={ongoingService.carModel} data-ai-hint={ongoingService.dataAiHint} className="rounded-2xl object-cover w-full md:w-[150px]"/>
-                    <div className="flex-1 w-full">
-                        <div className="flex justify-between items-center mb-2">
-                            <h3 className="font-bold text-lg">{ongoingService.carModel}</h3>
-                            <span className="text-sm text-muted-foreground font-medium">{ongoingService.service}</span>
-                        </div>
-                        <Progress value={ongoingService.progress} className="h-2"/>
-                        <div className="flex justify-between items-center mt-2 text-sm text-muted-foreground">
-                            <span>In Progress...</span>
-                            <span>{ongoingService.progress}% Complete</span>
-                        </div>
-                    </div>
-                     <Button variant="outline" className="rounded-full self-stretch md:self-start w-full md:w-auto" asChild>
-                        <Link href={`/services?tab=active&serviceId=${ongoingService.id}`}>
-                            View Details <ArrowRight className="ml-2 h-4 w-4"/>
-                        </Link>
-                    </Button>
-                </CardContent>
-            </Card>
-        </section>
-      )}
-
-      <section>
+      
+      <section className="mb-12">
         <h2 className="text-2xl font-bold mb-4 flex items-center"><Flame className="mr-2 text-primary"/> Hot Collections</h2>
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -97,7 +67,7 @@ export default function DashboardPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {hotCollections.map((car, index) => (
-              <Card key={index} className={cn('rounded-3xl shadow-lg overflow-hidden border', car.bgColorClass, car.borderColorClass)}>
+              <Card key={index} className={cn('rounded-3xl shadow-lg overflow-hidden border')}>
                 <CardContent className="p-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                     <div className="flex flex-col gap-4">
@@ -139,7 +109,7 @@ export default function DashboardPage() {
         )}
       </section>
 
-      <section className="mt-12">
+      <section>
         <h2 className="text-2xl font-bold mb-4">Regular Collections</h2>
         <Card className="rounded-3xl shadow-lg">
             <CardContent className="p-0">

@@ -16,12 +16,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from '@/components/ui/progress';
 import { useDataStore } from '@/store/data-store';
 import { type Service, type ActiveService } from '@/lib/constants';
+import Image from 'next/image';
 
 function ServicesComponent() {
   const searchParams = useSearchParams();
   const { 
       services, 
       activeServices, 
+      ongoingService,
       isLoading, 
       fetchServices, 
       getActiveServiceById 
@@ -135,11 +137,33 @@ function ServicesComponent() {
         <TabsContent value="active" className="mt-8">
              {isLoading ? (
                 <div className="space-y-6 max-w-4xl mx-auto">
+                    <Skeleton className="h-32 w-full" />
                     <Skeleton className="h-24 w-full" />
                     <Skeleton className="h-24 w-full" />
                 </div>
             ) : (
               <div className="space-y-6 max-w-4xl mx-auto">
+                  {ongoingService.isSerivceInProgress && (
+                    <Card className="rounded-3xl shadow-lg bg-blue-50 border-blue-200">
+                        <CardContent className="p-4 md:p-6 flex flex-col md:flex-row items-center gap-4 md:gap-6">
+                            <Image src={ongoingService.image} width={150} height={100} alt={ongoingService.carModel} data-ai-hint={ongoingService.dataAiHint} className="rounded-2xl object-cover w-full md:w-[150px]"/>
+                            <div className="flex-1 w-full">
+                                <div className="flex justify-between items-center mb-2">
+                                    <h3 className="font-bold text-lg">{ongoingService.carModel}</h3>
+                                    <span className="text-sm text-muted-foreground font-medium">{ongoingService.service}</span>
+                                </div>
+                                <Progress value={ongoingService.progress} className="h-2"/>
+                                <div className="flex justify-between items-center mt-2 text-sm text-muted-foreground">
+                                    <span>In Progress...</span>
+                                    <span>{ongoingService.progress}% Complete</span>
+                                </div>
+                            </div>
+                            <Button variant="outline" className="rounded-full self-stretch md:self-start w-full md:w-auto" onClick={() => handleViewDetailsClick(getActiveServiceById(ongoingService.id)!)}>
+                                View Details <ArrowRight className="ml-2 h-4 w-4"/>
+                            </Button>
+                        </CardContent>
+                    </Card>
+                  )}
                   {activeServices.map(service => (
                       <Card key={service.id} className="p-4 md:p-6 flex items-center gap-4 md:gap-6 cursor-pointer hover:bg-muted/50 transition-colors" onClick={() => handleViewDetailsClick(service)}>
                           <div className="bg-secondary p-4 rounded-full">

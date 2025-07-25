@@ -2,6 +2,8 @@ import { CustomizationWorkspace } from '@/components/customization/Customization
 
 export default function CustomizePage() {
   return (
-    <CustomizationWorkspace />
+    <div className="pb-20 md:pb-0">
+      <CustomizationWorkspace />
+    </div>
   );
 }

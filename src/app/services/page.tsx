@@ -128,7 +128,7 @@ function ServicesComponent() {
   }
 
   return (
-    <div className="container mx-auto py-12 px-4 md:px-6">
+    <div className="container mx-auto py-12 px-4 md:px-6 pb-20 md:pb-12">
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold tracking-tight">Our Services</h1>
         <p className="mt-4 text-lg text-muted-foreground">
@@ -186,18 +186,18 @@ function ServicesComponent() {
         <TabsContent value="active" className="mt-8">
             <div className="space-y-6 max-w-4xl mx-auto">
                 {activeServices.map(service => (
-                    <Card key={service.id} className="p-6 flex items-center gap-6 cursor-pointer hover:bg-muted/50 transition-colors" onClick={() => handleViewDetailsClick(service)}>
+                    <Card key={service.id} className="p-4 md:p-6 flex items-center gap-4 md:gap-6 cursor-pointer hover:bg-muted/50 transition-colors" onClick={() => handleViewDetailsClick(service)}>
                         <div className="bg-secondary p-4 rounded-full">
                             {service.status === 'Completed' ? <ShieldCheck className="w-8 h-8 text-green-500"/> : <Clock className="w-8 h-8 text-primary"/>}
                         </div>
                         <div className="flex-1">
-                            <div className="flex justify-between items-center">
+                            <div className="flex flex-col md:flex-row justify-between md:items-center">
                                 <p className="font-bold text-lg">{service.carModel}</p>
-                                <span className={`px-3 py-1 text-sm rounded-full font-medium ${service.status === 'Completed' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}`}>{service.status}</span>
+                                <span className={`mt-2 md:mt-0 px-3 py-1 text-sm rounded-full font-medium self-start ${service.status === 'Completed' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}`}>{service.status}</span>
                             </div>
                             <p className="text-muted-foreground">{service.name}</p>
                         </div>
-                        <Button variant="outline" size="icon">
+                        <Button variant="outline" size="icon" className="hidden md:flex">
                             <Info className="h-5 w-5"/>
                         </Button>
                     </Card>
@@ -271,7 +271,7 @@ function ServicesComponent() {
 
 export default function ServicesPage() {
     return (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<div className="flex justify-center items-center h-full">Loading...</div>}>
             <ServicesComponent />
         </Suspense>
     )

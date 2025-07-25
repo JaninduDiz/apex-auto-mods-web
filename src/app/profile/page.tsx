@@ -70,9 +70,9 @@ export default function ProfilePage() {
 
 
   return (
-    <div className="container mx-auto py-12 px-4 md:px-6">
+    <div className="container mx-auto py-12 px-4 md:px-6 pb-20 md:pb-12">
       <Card className="w-full max-w-4xl mx-auto">
-        <CardHeader className="relative h-48 bg-gray-200 rounded-t-lg">
+        <CardHeader className="relative h-36 md:h-48 bg-gray-200 rounded-t-lg">
             <Image 
                 src="https://placehold.co/1024x300.png"
                 data-ai-hint="automotive garage background"
@@ -80,20 +80,20 @@ export default function ProfilePage() {
                 fill
                 className="object-cover rounded-t-lg"
             />
-            <div className="absolute bottom-0 left-6 translate-y-1/2">
-                <Avatar className="w-32 h-32 border-4 border-background">
+            <div className="absolute bottom-0 left-4 md:left-6 translate-y-1/2">
+                <Avatar className="w-24 h-24 md:w-32 md:h-32 border-4 border-background">
                     <AvatarImage src={user.avatarUrl} alt={user.name} data-ai-hint="man avatar"/>
                     <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
                 </Avatar>
             </div>
         </CardHeader>
-        <CardContent className="pt-20">
-          <div className="flex justify-between items-start">
+        <CardContent className="pt-16 md:pt-20">
+          <div className="flex flex-col md:flex-row justify-between items-start gap-4">
             <div>
-              <CardTitle className="text-3xl">{user.name}</CardTitle>
+              <CardTitle className="text-2xl md:text-3xl">{user.name}</CardTitle>
               <CardDescription className="text-muted-foreground">{user.email}</CardDescription>
             </div>
-            <Button variant="outline">
+            <Button variant="outline" className="w-full md:w-auto">
               <Edit className="mr-2 h-4 w-4" /> Edit Profile
             </Button>
           </div>

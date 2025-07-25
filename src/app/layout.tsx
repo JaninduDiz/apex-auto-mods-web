@@ -3,6 +3,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 import { Nav } from '@/components/layout/Nav';
+import { Header } from '@/components/layout/Header';
 
 export const metadata: Metadata = {
   title: 'Apex Auto Mods',
@@ -22,9 +23,12 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
       </head>
       <body className={cn("font-sans antialiased")}>
-        <div className="flex min-h-screen w-full">
+        <div className="flex min-h-screen w-full flex-col md:flex-row">
           <Nav />
-          <main className="flex-1 pl-24">{children}</main>
+          <div className="flex flex-col flex-1">
+            <Header />
+            <main className="flex-1 p-4 md:p-8 md:pt-4">{children}</main>
+          </div>
         </div>
         <Toaster />
       </body>

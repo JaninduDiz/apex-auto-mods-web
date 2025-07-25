@@ -34,13 +34,13 @@ export default function DashboardPage() {
   // }, []);
 
   return (
-    <div className="bg-background text-foreground min-h-screen p-8">
+    <div className="bg-background text-foreground min-h-screen p-4 md:p-8 pb-20 md:pb-8">
       <header className="flex justify-between items-center mb-10">
         <div>
           <h1 className="text-2xl font-bold">Good morning, Jeff!</h1>
           <p className="text-muted-foreground">Welcome back to your garage.</p>
         </div>
-        <div className="relative w-1/3">
+        <div className="relative w-1/3 hidden md:block">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
           <Input placeholder="Search here" className="pl-10 rounded-full" />
         </div>
@@ -54,9 +54,9 @@ export default function DashboardPage() {
         <section className="mb-12">
             <h2 className="text-2xl font-bold mb-4">Ongoing Service</h2>
             <Card className="rounded-3xl shadow-lg bg-blue-50 border-blue-200">
-                <CardContent className="p-6 flex items-center gap-6">
-                    <Image src={ongoingService.image} width={150} height={100} alt={ongoingService.carModel} data-ai-hint={ongoingService.dataAiHint} className="rounded-2xl object-cover"/>
-                    <div className="flex-1">
+                <CardContent className="p-4 md:p-6 flex flex-col md:flex-row items-center gap-4 md:gap-6">
+                    <Image src={ongoingService.image} width={150} height={100} alt={ongoingService.carModel} data-ai-hint={ongoingService.dataAiHint} className="rounded-2xl object-cover w-full md:w-[150px]"/>
+                    <div className="flex-1 w-full">
                         <div className="flex justify-between items-center mb-2">
                             <h3 className="font-bold text-lg">{ongoingService.carModel}</h3>
                             <span className="text-sm text-muted-foreground font-medium">{ongoingService.service}</span>
@@ -68,7 +68,7 @@ export default function DashboardPage() {
                         </div>
                     </div>
                      {/* This link navigates to the services page and passes parameters to show the specific service details */}
-                     <Button variant="outline" className="rounded-full self-start" asChild>
+                     <Button variant="outline" className="rounded-full self-stretch md:self-start w-full md:w-auto" asChild>
                         <Link href={`/services?tab=active&serviceId=${ongoingService.id}`}>
                             View Details <ArrowRight className="ml-2 h-4 w-4"/>
                         </Link>
@@ -84,7 +84,7 @@ export default function DashboardPage() {
           {hotCollections.map((car, index) => (
             <Card key={index} className={cn('rounded-3xl shadow-lg overflow-hidden border', car.bgColorClass, car.borderColorClass)}>
               <CardContent className="p-6">
-                <div className="grid grid-cols-2 gap-6 items-center">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                   <div className="flex flex-col gap-4">
                      <div className="flex items-center gap-4">
                         <Image src={car.logo} data-ai-hint="car logo" width={40} height={40} alt="Car Logo" />
@@ -129,7 +129,7 @@ export default function DashboardPage() {
             <CardContent className="p-0">
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead>
+                  <thead className="hidden md:table-header-group">
                     <tr className="text-left text-muted-foreground">
                       <th className="p-6 font-semibold">CAR MODEL</th>
                       <th className="p-6 font-semibold">TOTAL RUN</th>
@@ -138,20 +138,20 @@ export default function DashboardPage() {
                       <th className="p-6 font-semibold"></th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody className="divide-y md:divide-none">
                     {regularCollections.map((car) => (
-                      <tr key={car.id} className="border-t">
-                        <td className="p-6 whitespace-nowrap">
+                      <tr key={car.id} className="block md:table-row">
+                        <td className="p-4 md:p-6 whitespace-nowrap block md:table-cell" data-label="Car Model">
                           <div className="flex items-center gap-4">
                             <Image src={car.image} width={80} height={50} alt={car.model} data-ai-hint={car.dataAiHint} className="rounded-lg object-cover"/>
                             <span className="font-semibold">{car.model}</span>
                           </div>
                         </td>
-                        <td className="p-6 text-muted-foreground whitespace-nowrap">{car.totalRun}</td>
-                        <td className="p-6 text-muted-foreground whitespace-nowrap">{car.condition}</td>
-                        <td className="p-6 font-semibold whitespace-nowrap">{car.price}</td>
-                        <td className="p-6 whitespace-nowrap">
-                          <Button variant="outline" className={`rounded-full ${car.condition === 'Great' ? 'bg-blue-100 text-blue-800 border-blue-200' : ''}`} asChild>
+                        <td className="p-4 md:p-6 text-muted-foreground whitespace-nowrap block md:table-cell" data-label="Total Run">{car.totalRun}</td>
+                        <td className="p-4 md:p-6 text-muted-foreground whitespace-nowrap block md:table-cell" data-label="Condition">{car.condition}</td>
+                        <td className="p-4 md:p-6 font-semibold whitespace-nowrap block md:table-cell" data-label="Asking Price">{car.price}</td>
+                        <td className="p-4 md:p-6 whitespace-nowrap block md:table-cell">
+                          <Button variant="outline" className={`rounded-full w-full md:w-auto ${car.condition === 'Great' ? 'bg-blue-100 text-blue-800 border-blue-200' : ''}`} asChild>
                             <Link href={`/cars/${car.id}`}>
                                 See details <ArrowRight className="ml-2 h-4 w-4"/>
                             </Link>
@@ -168,7 +168,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
-    
-
-    

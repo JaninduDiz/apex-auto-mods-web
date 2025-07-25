@@ -88,13 +88,8 @@ Your Node.js backend needs to implement the following endpoints. The frontend is
     ```json
     {
       "carModel": "String",
-      "color": "String", // e.g., "#3F51B5"
-      "selectedParts": {
-        "wheels": "Boolean",
-        "spoiler": "Boolean",
-        "bodykit": "Boolean",
-        "exhaust": "Boolean"
-      }
+      "color": "String",
+      "selectedParts": ["String"]
     }
     ```
 -   **Backend Logic**:
@@ -121,7 +116,7 @@ Your Node.js backend needs to implement the following endpoints. The frontend is
         "userId": "String",
         "carModel": "String",
         "color": "String",
-        "selectedParts": { ... },
+        "selectedParts": ["String"],
         "createdAt": "ISOStringDate"
       },
       ...
@@ -182,12 +177,7 @@ Your MongoDB collections or SQL tables should be structured as follows.
   userId: String,     // Foreign key to the 'users' collection/table
   carModel: String,
   color: String,
-  selectedParts: {
-    wheels: Boolean,
-    spoiler: Boolean,
-    bodykit: Boolean,
-    exhaust: Boolean,
-  },
+  selectedParts: [String], // Array of selected part names, e.g. ["wheels", "spoiler"]
   createdAt: Date
 }
 ```

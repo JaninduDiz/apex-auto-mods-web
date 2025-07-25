@@ -33,7 +33,7 @@ export function Nav() {
     
     return (
         <TooltipProvider>
-            <nav className="flex flex-col items-center justify-between w-24 bg-sidebar text-sidebar-foreground p-4 rounded-r-3xl">
+            <nav className="fixed left-0 top-0 z-50 flex h-full flex-col items-center justify-between w-24 bg-sidebar text-sidebar-foreground p-4 rounded-r-3xl">
                 <div className="flex flex-col items-center gap-8 pt-4">
                     <div className="flex flex-col items-center gap-4">
                         {navLinks.map((link) => {

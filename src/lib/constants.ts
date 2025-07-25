@@ -29,29 +29,41 @@ interface Build extends CustomizationState {
 export const hotCollections = [
   {
     name: "Range Rover Evoque",
+    brand: "Range Rover",
+    model: "Evoque",
+    logo: "https://placehold.co/40x40.png",
     image: "https://placehold.co/300x200.png",
     price: "$38,700",
-    dataAiHint: "orange range rover evoque",
+    dataAiHint: "orange range rover evoque convertible",
+    bgColorClass: "bg-orange-50",
+    borderColorClass: "border-orange-200",
+    totalRunBgColorClass: "bg-white",
     details: [
-      { type: "CC", value: "3997 CC", label: "Engine" },
-      { type: "BHP", value: "246.74 BHP", label: "Horsepower" },
-      { type: "Speed", value: "5 Speed", label: "Transmission" },
-      { type: "Cylinder", value: "4 Cylinder", label: "Cylinders" },
+      { type: "CC", value: "1997 CC", label: "Engine", bgColorClass: "bg-orange-100" },
+      { type: "BHP", value: "246.74 BHP", label: "Horsepower", bgColorClass: "bg-lime-100" },
+      { type: "Speed", value: "6 Speed", label: "Transmission", bgColorClass: "bg-yellow-100" },
+      { type: "Cylinder", value: "4 Cylinder", label: "Cylinders", bgColorClass: "bg-slate-200" },
     ],
     totalRun: "12,500 Km"
   },
   {
     name: "Nissan GTR R35 Nismo",
+    brand: "Nissan GTR",
+    model: "R35 Nismo",
+    logo: "https://placehold.co/40x40.png",
     image: "https://placehold.co/300x200.png",
     price: "$187,900",
     dataAiHint: "white nissan gtr",
+    bgColorClass: "bg-slate-50",
+    borderColorClass: "border-slate-200",
+    totalRunBgColorClass: "bg-green-200",
     details: [
-      { type: "CC", value: "3799 CC", label: "Engine" },
-      { type: "BHP", value: "591.4 BHP", label: "Horsepower" },
-      { type: "Speed", value: "6 Speed", label: "Transmission" },
-      { type: "Cylinder", value: "6 Cylinder", label: "Cylinders" },
+      { type: "CC", value: "3799 CC", label: "Engine", bgColorClass: "bg-orange-100" },
+      { type: "BHP", value: "591.4 BHP", label: "Horsepower", bgColorClass: "bg-lime-100" },
+      { type: "Speed", value: "6 Speed", label: "Transmission", bgColorClass: "bg-yellow-100" },
+      { type: "Cylinder", value: "6 Cylinder", label: "Cylinders", bgColorClass: "bg-purple-200" },
     ],
-    totalRun: "17,754 Km"
+    totalRun: "9,254 Km"
   }
 ];
 
@@ -246,3 +258,5 @@ export const mockBuilds: Build[] = [
     { _id: '1', carModel: 'Toyota Supra GR', color: '#FF0000', parts: { wheels: true, spoiler: true, bodykit: false, exhaust: true }, createdAt: new Date().toISOString() },
     { _id: '2', carModel: 'Toyota Supra GR', color: '#0000FF', parts: { wheels: true, spoiler: false, bodykit: true, exhaust: false }, createdAt: new Date().toISOString() },
 ];
+
+    

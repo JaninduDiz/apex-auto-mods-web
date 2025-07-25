@@ -3,7 +3,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import Link from "next/link";
-import { Search, Flame, ArrowRight, Wrench, Droplets, GitBranch, Settings, Database, Gauge } from "lucide-react";
+import { Search, Flame, ArrowRight, Wrench, Droplets, GitBranch, Settings, Database, Gauge, Zap, ArrowUpNarrowWide } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -11,13 +11,15 @@ import { Progress } from "@/components/ui/progress";
 import React from "react";
 // MOCK DATA: Import mock data. Replace with your actual data fetching logic.
 import { hotCollections, regularCollections, ongoingService } from "@/lib/constants";
+import { cn } from "@/lib/utils";
 
 
 const iconMap: { [key: string]: React.ElementType } = {
-    'CC': Database,
-    'BHP': Settings,
+    'CC': Zap,
+    'BHP': ArrowUpNarrowWide,
     'Speed': GitBranch,
-    'Cylinder': Droplets
+    'Cylinder': Droplets,
+    'TotalRun': Gauge
 }
 
 
@@ -82,35 +84,37 @@ export default function DashboardPage() {
         <h2 className="text-2xl font-bold mb-4 flex items-center"><Flame className="mr-2 text-primary"/> Hot Collections</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {hotCollections.map((car, index) => (
-            <Card key={index} className={`rounded-3xl shadow-lg overflow-hidden ${index === 0 ? 'bg-orange-50 border-orange-200' : 'bg-blue-50 border-blue-200'}`}>
-              <CardHeader className="p-6">
-                <CardTitle className="flex items-center gap-4">
-                  <Image src="https://placehold.co/40x40.png" data-ai-hint="car logo" width={40} height={40} alt="Car Logo" />
-                  <div>
-                    <h3 className="text-xl font-bold">{car.name}</h3>
-                    <p className="text-sm text-muted-foreground">{car.name.split(" ")[0]}</p>
-                  </div>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-6 pt-0">
-                <div className="flex gap-6">
-                  <div className="w-1/2">
-                    <Image src={car.image} width={300} height={200} alt={car.name} data-ai-hint={car.dataAiHint} className="rounded-2xl object-cover w-full"/>
-                    <p className="text-2xl font-bold mt-4">{car.price} <span className="text-sm font-normal text-muted-foreground">USD</span></p>
-                  </div>
-                  <div className="w-1/2 grid grid-cols-2 gap-4">
-                    {car.details.map(detail => {
-                      const Icon = iconMap[detail.type];
-                      return (
-                        <div key={detail.value} className="bg-background rounded-2xl p-4 flex flex-col items-center justify-center text-center">
-                            {Icon && <Icon className="h-6 w-6 mb-2 text-muted-foreground" />}
-                            <p className="text-sm font-semibold">{detail.value}</p>
-                            <p className="text-xs text-muted-foreground">{detail.label}</p>
+            <Card key={index} className={cn('rounded-3xl shadow-lg overflow-hidden border', car.bgColorClass, car.borderColorClass)}>
+              <CardContent className="p-6">
+                <div className="grid grid-cols-2 gap-6 items-center">
+                  <div className="flex flex-col gap-4">
+                     <div className="flex items-center gap-4">
+                        <Image src={car.logo} data-ai-hint="car logo" width={40} height={40} alt="Car Logo" />
+                        <div>
+                            <h3 className="text-xl font-bold">{car.brand}</h3>
+                            <p className="text-sm text-muted-foreground">{car.model}</p>
                         </div>
-                      )
-                    })}
-                     <div className="bg-green-100 text-green-800 rounded-2xl p-4 flex flex-col items-center justify-center text-center col-span-2">
-                        <Gauge className="h-6 w-6 mb-2"/>
+                    </div>
+                    <Image src={car.image} width={300} height={200} alt={car.name} data-ai-hint={car.dataAiHint} className="rounded-2xl object-cover w-full"/>
+                    <div>
+                        <p className="text-xs text-muted-foreground">ASKING PRICE</p>
+                        <p className="text-2xl font-bold">{car.price} <span className="text-sm font-normal text-muted-foreground">USD</span></p>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                        {car.details.map((detail, detailIdx) => {
+                        const Icon = iconMap[detail.type];
+                        return (
+                            <div key={detail.value} className={cn("rounded-2xl p-4 flex flex-col items-center justify-center text-center", detail.bgColorClass)}>
+                                {Icon && <Icon className="h-6 w-6 mb-2 text-muted-foreground" />}
+                                <p className="text-sm font-semibold">{detail.value}</p>
+                            </div>
+                        )
+                        })}
+                    </div>
+                     <div className={cn("rounded-2xl p-4 flex items-center justify-center text-center gap-2", car.totalRunBgColorClass)}>
+                        <Gauge className="h-6 w-6"/>
                         <p className="text-sm font-semibold">Total Run: {car.totalRun}</p>
                     </div>
                   </div>
@@ -166,3 +170,5 @@ export default function DashboardPage() {
     </div>
   );
 }
+
+    

@@ -14,75 +14,29 @@ import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from '@/components/ui/progress';
-// MOCK DATA: Import mock data. Replace with your actual data fetching logic.
-import { staticServices, activeServices as mockActiveServices } from "@/lib/constants";
-
-
-interface Service {
-  id: string;
-  name: string;
-  description: string;
-  price: string;
-  icon: React.ElementType;
-}
-
-interface ActiveService extends Service {
-    carModel: string;
-    status: "In Progress" | "Completed";
-    progress: number;
-}
-
+import { useDataStore } from '@/store/data-store';
+import { type Service, type ActiveService } from '@/lib/constants';
 
 function ServicesComponent() {
   const searchParams = useSearchParams();
-  const [services, setServices] = useState<Omit<Service, 'id'>[]>([]);
-  // MOCK DATA: Using mock active services. Replace with state from an API call.
-  const [activeServices, setActiveServices] = useState<ActiveService[]>(mockActiveServices);
-  const [isLoadingServices, setIsLoadingServices] = useState(true);
+  const { 
+      services, 
+      activeServices, 
+      isLoading, 
+      fetchServices, 
+      getActiveServiceById 
+  } = useDataStore();
+
   const [isBooking, setIsBooking] = useState(false);
-  const [selectedService, setSelectedService] = useState<Omit<Service, 'id'> | null>(null);
+  const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [selectedActiveService, setSelectedActiveService] = useState<ActiveService | null>(null);
   const [isViewingDetails, setIsViewingDetails] = useState(false);
   const [activeTab, setActiveTab] = useState("available");
   const { toast } = useToast();
 
   useEffect(() => {
-    const fetchServices = async () => {
-      setIsLoadingServices(true);
-      try {
-        // TODO: Replace this with an actual API call to your backend
-        // const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/services`);
-        // if (!response.ok) {
-        //   throw new Error("Failed to fetch services");
-        // }
-        // const data = await response.json();
-        // setServices(data);
-
-        // Using static data for now
-        setServices(staticServices);
-      } catch (error) {
-        console.error(error);
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Could not fetch services. Displaying static data."
-        })
-        setServices(staticServices);
-      } finally {
-        setIsLoadingServices(false);
-      }
-    };
-
-    // TODO: Fetch active services for the logged-in user
-    // This would typically involve getting the user's ID from an auth context
-    // and making a call like:
-    // const fetchActiveServices = async (userId) => {
-    //   const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/services/active/${userId}`);
-    //   ...
-    // }
-
     fetchServices();
-  }, [toast]);
+  }, [fetchServices]);
 
   useEffect(() => {
     const tab = searchParams.get('tab');
@@ -92,29 +46,24 @@ function ServicesComponent() {
       setActiveTab('active');
     }
 
-    if (serviceId) {
-      // Using mock data. In a real app, you would have already fetched this.
-      const serviceToView = activeServices.find(s => s.id === serviceId);
+    if (serviceId && !isLoading) {
+      const serviceToView = getActiveServiceById(serviceId);
       if (serviceToView) {
         setSelectedActiveService(serviceToView);
         setIsViewingDetails(true);
       }
     }
-  }, [searchParams, activeServices]);
+  }, [searchParams, isLoading, getActiveServiceById]);
 
-  const handleBookClick = (service: Omit<Service, 'id'>) => {
+  const handleBookClick = (service: Service) => {
     setSelectedService(service);
     setIsBooking(true);
   }
 
   const handleBookingSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Add logic here to submit the booking to your backend API
-    // For example:
-    // await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/services/book`, {
-    //   method: 'POST',
-    //   body: JSON.stringify({ serviceName: selectedService.name, ... }),
-    // });
+    // In a real app, this would call an action in your store to book a service.
+    // e.g., bookNewService({ serviceName: selectedService.name, ... })
     setIsBooking(false);
     toast({
       title: "Booking Confirmed!",
@@ -142,7 +91,7 @@ function ServicesComponent() {
           <TabsTrigger value="active">Your Active Services</TabsTrigger>
         </TabsList>
         <TabsContent value="available" className="mt-8">
-            {isLoadingServices ? (
+            {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {Array.from({ length: 6 }).map((_, index) => (
                 <Card key={index}>
@@ -162,7 +111,7 @@ function ServicesComponent() {
             ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {services.map((service) => (
-                <Card key={service.name} className="flex flex-col">
+                <Card key={service.id} className="flex flex-col">
                   <CardHeader className="flex flex-row items-start gap-4 pb-4">
                     <div className="bg-primary/10 p-3 rounded-full">
                       <service.icon className="w-6 h-6 text-primary" />
@@ -184,25 +133,32 @@ function ServicesComponent() {
           )}
         </TabsContent>
         <TabsContent value="active" className="mt-8">
-            <div className="space-y-6 max-w-4xl mx-auto">
-                {activeServices.map(service => (
-                    <Card key={service.id} className="p-4 md:p-6 flex items-center gap-4 md:gap-6 cursor-pointer hover:bg-muted/50 transition-colors" onClick={() => handleViewDetailsClick(service)}>
-                        <div className="bg-secondary p-4 rounded-full">
-                            {service.status === 'Completed' ? <ShieldCheck className="w-8 h-8 text-green-500"/> : <Clock className="w-8 h-8 text-primary"/>}
-                        </div>
-                        <div className="flex-1">
-                            <div className="flex flex-col md:flex-row justify-between md:items-center">
-                                <p className="font-bold text-lg">{service.carModel}</p>
-                                <span className={`mt-2 md:mt-0 px-3 py-1 text-sm rounded-full font-medium self-start ${service.status === 'Completed' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}`}>{service.status}</span>
-                            </div>
-                            <p className="text-muted-foreground">{service.name}</p>
-                        </div>
-                        <Button variant="outline" size="icon" className="hidden md:flex">
-                            <Info className="h-5 w-5"/>
-                        </Button>
-                    </Card>
-                ))}
-            </div>
+             {isLoading ? (
+                <div className="space-y-6 max-w-4xl mx-auto">
+                    <Skeleton className="h-24 w-full" />
+                    <Skeleton className="h-24 w-full" />
+                </div>
+            ) : (
+              <div className="space-y-6 max-w-4xl mx-auto">
+                  {activeServices.map(service => (
+                      <Card key={service.id} className="p-4 md:p-6 flex items-center gap-4 md:gap-6 cursor-pointer hover:bg-muted/50 transition-colors" onClick={() => handleViewDetailsClick(service)}>
+                          <div className="bg-secondary p-4 rounded-full">
+                              {service.status === 'Completed' ? <ShieldCheck className="w-8 h-8 text-green-500"/> : <Clock className="w-8 h-8 text-primary"/>}
+                          </div>
+                          <div className="flex-1">
+                              <div className="flex flex-col md:flex-row justify-between md:items-center">
+                                  <p className="font-bold text-lg">{service.carModel}</p>
+                                  <span className={`mt-2 md:mt-0 px-3 py-1 text-sm rounded-full font-medium self-start ${service.status === 'Completed' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}`}>{service.status}</span>
+                              </div>
+                              <p className="text-muted-foreground">{service.name}</p>
+                          </div>
+                          <Button variant="outline" size="icon" className="hidden md:flex">
+                              <Info className="h-5 w-5"/>
+                          </Button>
+                      </Card>
+                  ))}
+              </div>
+            )}
         </TabsContent>
       </Tabs>
 
@@ -271,7 +227,7 @@ function ServicesComponent() {
 
 export default function ServicesPage() {
     return (
-        <Suspense fallback={<div className="flex justify-center items-center h-full">Loading...</div>}>
+        <Suspense fallback={<div className="flex justify-center items-center h-full"><Loader2 className="w-8 h-8 animate-spin"/></div>}>
             <ServicesComponent />
         </Suspense>
     )

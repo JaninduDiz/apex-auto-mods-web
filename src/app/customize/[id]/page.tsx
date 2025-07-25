@@ -6,9 +6,9 @@ import { useParams, useRouter } from "next/navigation";
 import { CarPreview } from "@/components/customization/CarPreview";
 import { CustomizationPanel } from "@/components/customization/CustomizationPanel";
 import { useToast } from "@/hooks/use-toast";
-import { mockBuilds } from "@/lib/constants";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useDataStore } from "@/store/data-store";
 
 export type Part = "wheels" | "spoiler" | "bodykit" | "exhaust";
 
@@ -22,6 +22,8 @@ export default function CustomizationWorkspacePage() {
   const params = useParams();
   const router = useRouter();
   const buildId = params.id;
+  
+  const { getBuildById, saveBuild, isLoading: isStoreLoading } = useDataStore();
 
   const [customization, setCustomization] = useState<CustomizationState>({
     color: "#3F51B5",
@@ -34,21 +36,20 @@ export default function CustomizationWorkspacePage() {
   });
   
   const [carModel, setCarModel] = useState("Toyota Supra GR"); // Default model
-  const [isLoading, setIsLoading] = useState(true);
+  const [isPageLoading, setIsPageLoading] = useState(true);
 
   useEffect(() => {
     // If it's not a new build, try to load it.
     if (buildId && buildId !== 'new') {
-        // TODO: In a real app, you would fetch this build from your API
-        const build = mockBuilds.find(b => b._id === buildId);
+        const build = getBuildById(buildId as string);
         if (build) {
             setCustomization({
                 color: build.color,
                 parts: build.parts,
             });
             setCarModel(build.carModel);
-        } else {
-            // Handle case where build is not found
+        } else if (!isStoreLoading) {
+            // Handle case where build is not found and the store has finished loading
             toast({
                 variant: "destructive",
                 title: "Build not found",
@@ -59,38 +60,22 @@ export default function CustomizationWorkspacePage() {
     }
     // For 'new' builds, we just use the default state.
     // In a real app, you might let the user select a car first.
-    setIsLoading(false);
-  }, [buildId, router, toast]);
+    if(!isStoreLoading) {
+      setIsPageLoading(false);
+    }
+  }, [buildId, router, toast, getBuildById, isStoreLoading]);
 
   const [isSavingBuild, setIsSavingBuild] = useState(false);
 
   const handleSaveBuild = async () => {
     setIsSavingBuild(true);
     try {
-      // TODO: Replace this with your actual API call.
-      // This would be a POST to create a new build or a PUT to update an existing one.
-      // const token = localStorage.getItem('token'); 
-      // const url = buildId === 'new' ? '/builds' : `/builds/${buildId}`;
-      // const method = buildId === 'new' ? 'POST' : 'PUT';
-      // const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}${url}`, {
-      //   method,
-      //   headers: { 
-      //     'Content-Type': 'application/json',
-      //     'Authorization': `Bearer ${token}` 
-      //   },
-      //   body: JSON.stringify({
-      //     carModel,
-      //     ...customization
-      //   }),
-      // });
-
-      // if (!response.ok) {
-      //   throw new Error("Failed to save build.");
-      // }
-      
-      // Simulating a successful API call for now.
-      console.log("Dummy save successful", { customization });
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network delay
+      await saveBuild({
+        _id: buildId === 'new' ? `build-${Date.now()}` : buildId as string,
+        carModel,
+        ...customization,
+        createdAt: new Date().toISOString()
+      });
 
       toast({
         title: "Build Saved!",
@@ -111,9 +96,9 @@ export default function CustomizationWorkspacePage() {
     }
   };
   
-  if (isLoading) {
+  if (isPageLoading) {
     return (
-        <div className="flex items-center justify-center h-full">
+        <div className="flex items-center justify-center h-screen">
             <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
     )

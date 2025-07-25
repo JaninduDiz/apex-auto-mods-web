@@ -10,52 +10,25 @@ import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
-import { type Build } from "@/lib/constants";
-// MOCK DATA: Import mock data. Replace with your actual data fetching logic.
-import { mockBuilds } from "@/lib/constants";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/user-store";
+import { useDataStore } from "@/store/data-store";
 
 
 export default function ProfilePage() {
   const { toast } = useToast();
   const router = useRouter();
-  const [builds, setBuilds] = useState<Build[]>([]);
-  const [isLoadingBuilds, setIsLoadingBuilds] = useState(true);
-
+  
   const { user, logout } = useUserStore();
+  const { builds, isLoading: isLoadingBuilds, fetchBuilds } = useDataStore();
 
   useEffect(() => {
-    const fetchBuilds = async () => {
-      if (!user?._id) return;
-      setIsLoadingBuilds(true);
-      try {
-        // TODO: Replace this with an actual API call to your backend.
-        // In a real app, you'd get the user ID from your auth context.
-        // const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/builds/${user._id}`);
-        // if (!response.ok) {
-        //   throw new Error("Failed to fetch builds.");
-        // }
-        // const data = await response.json();
-        // setBuilds(data);
-        
-        // Using mock data for demonstration.
-        await new Promise(res => setTimeout(res, 500));
-        setBuilds(mockBuilds);
-
-      } catch (error: any) {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: error.message || "Could not fetch your saved builds."
-        })
-      } finally {
-        setIsLoadingBuilds(false);
-      }
-    };
-    
-    fetchBuilds();
-  }, [toast, user?._id]);
+    // We can "fetch" builds when the component mounts.
+    // In a real app, this might take a userId.
+    if (user?._id) {
+        fetchBuilds();
+    }
+  }, [fetchBuilds, user?._id]);
 
   const handleLogout = () => {
     logout();
@@ -67,8 +40,19 @@ export default function ProfilePage() {
   }
   
   if (!user) {
+    // This can be a more sophisticated loading state or a redirect.
+    // For now, if no user, we redirect to login after a moment.
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        if (!user) {
+          router.push('/login');
+        }
+      }, 2000);
+      return () => clearTimeout(timer);
+    }, [user, router]);
+
     return (
-        <div className="flex items-center justify-center h-full">
+        <div className="flex items-center justify-center h-screen">
             <Loader2 className="w-8 h-8 animate-spin text-primary" />
             <p className="ml-4">Loading profile...</p>
         </div>

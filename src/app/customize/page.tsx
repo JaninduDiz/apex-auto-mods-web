@@ -5,14 +5,19 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Paintbrush, PlusCircle } from "lucide-react";
-import { mockBuilds } from "@/lib/constants"; // Using mock data for now
 import { useRouter } from "next/navigation";
+import { useDataStore } from "@/store/data-store";
+import { useEffect } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 
 export default function CustomizePage() {
     const router = useRouter();
-    // In a real app, you would fetch the user's builds here
-    const builds = mockBuilds;
+    const { builds, isLoading, fetchBuilds } = useDataStore();
+    
+    useEffect(() => {
+        fetchBuilds();
+    }, [fetchBuilds]);
 
     const handleCreateNew = () => {
         // We can use a special ID like 'new' to signify a new build
@@ -34,7 +39,13 @@ export default function CustomizePage() {
                 </Button>
             </div>
 
-            {builds.length > 0 ? (
+            {isLoading ? (
+                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <Skeleton className="h-48 w-full" />
+                    <Skeleton className="h-48 w-full" />
+                    <Skeleton className="h-48 w-full" />
+                 </div>
+            ) : builds.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {builds.map((build) => (
                         <Card key={build._id} className="flex flex-col">

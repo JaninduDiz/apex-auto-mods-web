@@ -123,11 +123,11 @@ export default function DashboardPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {regularCollections.map((car, index) => (
-                      <tr key={index} className="border-t">
+                    {regularCollections.map((car) => (
+                      <tr key={car.id} className="border-t">
                         <td className="p-6 whitespace-nowrap">
                           <div className="flex items-center gap-4">
-                            <Image src={car.image} width={80} height={40} alt={car.model} data-ai-hint={car.dataAiHint} className="rounded-lg"/>
+                            <Image src={car.image} width={80} height={50} alt={car.model} data-ai-hint={car.dataAiHint} className="rounded-lg object-cover"/>
                             <span className="font-semibold">{car.model}</span>
                           </div>
                         </td>
@@ -135,8 +135,10 @@ export default function DashboardPage() {
                         <td className="p-6 text-muted-foreground whitespace-nowrap">{car.condition}</td>
                         <td className="p-6 font-semibold whitespace-nowrap">{car.price}</td>
                         <td className="p-6 whitespace-nowrap">
-                          <Button variant="outline" className={`rounded-full ${car.condition === 'Great' ? 'bg-blue-100 text-blue-800 border-blue-200' : ''}`}>
-                            See details <ArrowRight className="ml-2 h-4 w-4"/>
+                          <Button variant="outline" className={`rounded-full ${car.condition === 'Great' ? 'bg-blue-100 text-blue-800 border-blue-200' : ''}`} asChild>
+                            <Link href={`/cars/${car.id}`}>
+                                See details <ArrowRight className="ml-2 h-4 w-4"/>
+                            </Link>
                           </Button>
                         </td>
                       </tr>

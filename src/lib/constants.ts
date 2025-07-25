@@ -57,36 +57,88 @@ export const hotCollections = [
 
 export const regularCollections = [
   {
+    id: "honda-crv-2021",
     model: "Honda Cr-V 2021",
     totalRun: "22,409 Km",
     condition: "Great",
     price: "$30,450",
-    image: "https://placehold.co/80x40.png",
-    dataAiHint: "honda cr-v"
+    image: "https://placehold.co/800x600.png",
+    dataAiHint: "honda cr-v",
+    year: 2021,
+    details: {
+        engine: "1.5L Turbo",
+        transmission: "Automatic",
+        bhp: "190 BHP"
+    },
+    features: ["Sunroof", "Leather Seats", "Apple CarPlay", "Lane Assist"],
+    gallery: [
+        "https://placehold.co/600x400.png",
+        "https://placehold.co/600x400.png",
+        "https://placehold.co/600x400.png",
+    ]
   },
   {
+    id: "audi-a6-2021",
     model: "Audi A6 2021",
     totalRun: "18,647 Km",
     condition: "Need Servicing",
     price: "$54,900",
-    image: "https://placehold.co/80x40.png",
-    dataAiHint: "audi a6"
+    image: "https://placehold.co/800x600.png",
+    dataAiHint: "audi a6",
+    year: 2021,
+    details: {
+        engine: "2.0L TFSI",
+        transmission: "7-Speed S tronic",
+        bhp: "248 BHP"
+    },
+    features: ["Virtual Cockpit", "MMI Navigation Plus", "Bang & Olufsen Sound"],
+    gallery: [
+        "https://placehold.co/600x400.png",
+        "https://placehold.co/600x400.png",
+        "https://placehold.co/600x400.png",
+    ]
   },
   {
+    id: "audi-q3-2019",
     model: "Audi Q3 2019",
     totalRun: "35,000 Km",
     condition: "Great",
     price: "$35,695",
-    image: "https://placehold.co/80x40.png",
-    dataAiHint: "audi q3"
+    image: "https://placehold.co/800x600.png",
+    dataAiHint: "audi q3",
+    year: 2019,
+     details: {
+        engine: "2.0L TFSI",
+        transmission: "8-Speed Tiptronic",
+        bhp: "228 BHP"
+    },
+    features: ["Quattro All-Wheel Drive", "Panoramic Sunroof", "LED Headlights"],
+    gallery: [
+        "https://placehold.co/600x400.png",
+        "https://placehold.co/600x400.png",
+        "https://placehold.co/600x400.png",
+    ]
   },
   {
+    id: "mercedes-c-class-2019",
     model: "Mercedes-Benz C-Class 2019",
     totalRun: "12,520 Km",
     condition: "Excellent",
     price: "$52,000",
-    image: "https://placehold.co/80x40.png",
-    dataAiHint: "mercedes c-class"
+    image: "https://placehold.co/800x600.png",
+    dataAiHint: "mercedes c-class",
+    year: 2019,
+    details: {
+        engine: "2.0L I4 Turbo",
+        transmission: "9G-TRONIC Automatic",
+        bhp: "255 BHP"
+    },
+    features: ["12.3-inch Digital Instrument Cluster", "Ambient Lighting", "Burmester Surround Sound"],
+     gallery: [
+        "https://placehold.co/600x400.png",
+        "https://placehold.co/600x400.png",
+        "https://placehold.co/600x400.png",
+    ]
   },
 ];
 

@@ -54,6 +54,16 @@ export interface RegularCollection {
     gallery: string[];
 }
 
+export interface UserVehicle {
+  id: string;
+  userId: string;
+  make: string;
+  carModel: string;
+  color: string;
+  year: number;
+  odoRead: string;
+}
+
 
 // --- DASHBOARD MOCK DATA ---
 
@@ -283,3 +293,8 @@ export const mockBuilds: Build[] = [
     { _id: 'build-2', carModel: 'Nissan GTR R35', color: '#0000FF', parts: ['wheels', 'bodykit'], createdAt: '2023-10-25T14:30:00Z' },
     { _id: 'build-3', carModel: 'Range Rover Evoque', color: '#FFA500', parts: ['wheels', 'exhaust'], createdAt: '2023-09-15T11:00:00Z' },
 ];
+
+export const mockUserVehicles: UserVehicle[] = [
+    { id: 'v1', userId: 'user123', make: 'Toyota', carModel: 'Supra GR', color: 'Red', year: 2022, odoRead: '5,000 Km' },
+    { id: 'v2', userId: 'user123', make: 'Nissan', carModel: 'GTR R35 Nismo', color: 'Blue', year: 2021, odoRead: '9,254 Km' }
+]

@@ -7,12 +7,16 @@ import {
     mockBuilds,
     staticServices,
     activeServices as mockActiveServices,
+    mockUserVehicles,
     type HotCollection,
     type RegularCollection,
     type Build,
     type Service,
-    type ActiveService
+    type ActiveService,
+    type UserVehicle,
 } from '@/lib/constants';
+
+type NewVehicle = Omit<UserVehicle, 'id'>;
 
 interface DataState {
     hotCollections: HotCollection[];
@@ -21,13 +25,17 @@ interface DataState {
     builds: Build[];
     services: Service[];
     activeServices: ActiveService[];
+    userVehicles: UserVehicle[];
     isLoading: boolean;
+    isLoadingVehicles: boolean;
     fetchDashboardData: () => Promise<void>;
     fetchBuilds: () => Promise<void>;
     fetchServices: () => Promise<void>;
+    fetchUserVehicles: () => Promise<void>;
     getBuildById: (id: string) => Build | undefined;
     getActiveServiceById: (id: string) => ActiveService | undefined;
     saveBuild: (build: Omit<Build, 'createdAt'> & { createdAt?: string }) => Promise<void>;
+    addVehicle: (vehicle: NewVehicle) => Promise<void>;
 }
 
 const useDataStore = create<DataState>((set, get) => ({
@@ -37,7 +45,9 @@ const useDataStore = create<DataState>((set, get) => ({
     builds: [],
     services: [],
     activeServices: [],
+    userVehicles: [],
     isLoading: true,
+    isLoadingVehicles: true,
 
     fetchDashboardData: async () => {
         set({ isLoading: true });
@@ -66,6 +76,23 @@ const useDataStore = create<DataState>((set, get) => ({
             isLoading: false 
         });
     },
+
+    fetchUserVehicles: async () => {
+        set({ isLoadingVehicles: true });
+        await new Promise(resolve => setTimeout(resolve, 500));
+        set({ userVehicles: mockUserVehicles, isLoadingVehicles: false });
+    },
+    
+    addVehicle: async (vehicle) => {
+        set({ isLoadingVehicles: true });
+        await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API delay
+        const newVehicle = { ...vehicle, id: `v${Date.now()}` };
+        set(state => ({
+            userVehicles: [...state.userVehicles, newVehicle],
+            isLoadingVehicles: false
+        }));
+    },
+
 
     getBuildById: (id: string) => {
         return get().builds.find(build => build._id === id);
@@ -102,4 +129,5 @@ const useDataStore = create<DataState>((set, get) => ({
 
 }));
 
-export { useDataStore };
+export { useDataStore, type NewVehicle };
+

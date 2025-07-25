@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { User, Mail, Phone, MapPin, Edit, Paintbrush, Loader2, LogOut } from "lucide-react";
+import { User, Mail, Phone, MapPin, Edit, Paintbrush, Loader2, LogOut, PlusCircle } from "lucide-react";
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -13,6 +13,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/user-store";
 import { useDataStore } from "@/store/data-store";
+import { AddVehicleForm } from "@/components/profile/AddVehicleForm";
+import { VehicleList } from "@/components/profile/VehicleList";
 
 
 export default function ProfilePage() {
@@ -20,15 +22,16 @@ export default function ProfilePage() {
   const router = useRouter();
   
   const { user, logout } = useUserStore();
-  const { builds, isLoading: isLoadingBuilds, fetchBuilds } = useDataStore();
+  const { builds, isLoading: isLoadingBuilds, fetchBuilds, userVehicles, fetchUserVehicles, addVehicle, isLoadingVehicles } = useDataStore();
+  
+  const [isAddVehicleOpen, setIsAddVehicleOpen] = useState(false);
 
   useEffect(() => {
-    // We can "fetch" builds when the component mounts.
-    // In a real app, this might take a userId.
     if (user?._id) {
         fetchBuilds();
+        fetchUserVehicles();
     }
-  }, [fetchBuilds, user?._id]);
+  }, [fetchBuilds, fetchUserVehicles, user?._id]);
 
   const handleLogout = () => {
     logout();
@@ -40,8 +43,6 @@ export default function ProfilePage() {
   }
   
   if (!user) {
-    // This can be a more sophisticated loading state or a redirect.
-    // For now, if no user, we redirect to login after a moment.
     useEffect(() => {
       const timer = setTimeout(() => {
         if (!user) {
@@ -62,6 +63,12 @@ export default function ProfilePage() {
 
   return (
     <div className="container mx-auto py-12 px-4 md:px-6 pb-20 md:pb-12">
+      <AddVehicleForm 
+        isOpen={isAddVehicleOpen}
+        setIsOpen={setIsAddVehicleOpen}
+        addVehicle={addVehicle}
+        userId={user._id}
+      />
       <Card className="w-full max-w-4xl mx-auto">
         <CardHeader className="relative h-36 md:h-48 bg-gray-200 rounded-t-lg">
             <Image 
@@ -100,6 +107,10 @@ export default function ProfilePage() {
               <p className="text-2xl font-bold">{builds.length}</p>
               <p className="text-sm text-muted-foreground">Builds</p>
             </div>
+             <div className="text-center">
+              <p className="text-2xl font-bold">{userVehicles.length}</p>
+              <p className="text-sm text-muted-foreground">Vehicles</p>
+            </div>
             <div className="text-center">
               <p className="text-2xl font-bold">{user.followers.toLocaleString()}</p>
               <p className="text-sm text-muted-foreground">Followers</p>
@@ -113,25 +124,17 @@ export default function ProfilePage() {
           <Separator className="my-8" />
 
           <div className="mb-8">
-            <h3 className="text-lg font-semibold mb-4">Contact Information</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                <div className="flex items-center gap-3">
-                    <User className="w-5 h-5 text-muted-foreground" />
-                    <span>{user.name}</span>
-                </div>
-                <div className="flex items-center gap-3">
-                    <Mail className="w-5 h-5 text-muted-foreground" />
-                    <span>{user.email}</span>
-                </div>
-                <div className="flex items-center gap-3">
-                    <Phone className="w-5 h-5 text-muted-foreground" />
-                    <span>{user.phone}</span>
-                </div>
-                <div className="flex items-center gap-3">
-                    <MapPin className="w-5 h-5 text-muted-foreground" />
-                    <span>{user.location}</span>
-                </div>
+            <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold">My Vehicles</h3>
+                 <Button variant="outline" size="sm" onClick={() => setIsAddVehicleOpen(true)}>
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Add Vehicle
+                </Button>
             </div>
+             <VehicleList
+              vehicles={userVehicles}
+              isLoading={isLoadingVehicles}
+            />
           </div>
 
           <Separator className="my-8" />
@@ -170,3 +173,4 @@ export default function ProfilePage() {
     </div>
   );
 }
+

@@ -28,6 +28,7 @@ export function CustomizationWorkspace() {
 
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
+  const [isSavingBuild, setIsSavingBuild] = useState(false);
 
   const handleSuggestionFetch = async () => {
     setIsLoadingSuggestions(true);
@@ -53,6 +54,45 @@ export function CustomizationWorkspace() {
     }
   };
 
+  const handleSaveBuild = async () => {
+    setIsSavingBuild(true);
+    try {
+      // In a real app, you'd get the token from your auth context
+      const token = localStorage.getItem('token'); 
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/builds`, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          // 'Authorization': `Bearer ${token}` 
+        },
+        body: JSON.stringify({
+          carModel: 'Toyota Supra GR',
+          ...customization
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save build. Note: This is a dummy endpoint.");
+      }
+      
+      console.log("Dummy save successful", { response });
+      toast({
+        title: "Build Saved!",
+        description: "Your custom configuration has been saved to your profile.",
+      });
+
+    } catch (error: any) {
+       toast({
+        variant: "destructive",
+        title: "Save Failed",
+        description: error.message || "Could not save your build.",
+      })
+    } finally {
+      setIsSavingBuild(false);
+    }
+  };
+
+
   return (
     <div className="container mx-auto py-8">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
@@ -66,6 +106,8 @@ export function CustomizationWorkspace() {
             onGetSuggestions={handleSuggestionFetch}
             suggestions={suggestions}
             isLoadingSuggestions={isLoadingSuggestions}
+            onSaveBuild={handleSaveBuild}
+            isSavingBuild={isSavingBuild}
           />
         </div>
       </div>

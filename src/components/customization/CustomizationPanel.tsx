@@ -3,7 +3,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { Loader2, Wand2 } from "lucide-react";
+import { Loader2, Wand2, Save } from "lucide-react";
 import { type CustomizationState, type Part } from "./CustomizationWorkspace";
 import React from "react";
 import { Separator } from "@/components/ui/separator";
@@ -14,6 +14,8 @@ interface CustomizationPanelProps {
   onGetSuggestions: () => Promise<void>;
   suggestions: string[];
   isLoadingSuggestions: boolean;
+  onSaveBuild: () => Promise<void>;
+  isSavingBuild: boolean;
 }
 
 const parts: { id: Part; label: string }[] = [
@@ -29,6 +31,8 @@ export function CustomizationPanel({
   onGetSuggestions,
   suggestions,
   isLoadingSuggestions,
+  onSaveBuild,
+  isSavingBuild,
 }: CustomizationPanelProps) {
   
   const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,8 +49,20 @@ export function CustomizationPanel({
   return (
     <Card className="h-full shadow-lg">
       <CardHeader>
-        <CardTitle>Customize Your Ride</CardTitle>
-        <CardDescription>Toyota Supra GR</CardDescription>
+        <div className="flex justify-between items-center">
+          <div>
+            <CardTitle>Customize Your Ride</CardTitle>
+            <CardDescription>Toyota Supra GR</CardDescription>
+          </div>
+          <Button onClick={onSaveBuild} disabled={isSavingBuild} size="sm">
+            {isSavingBuild ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Save className="mr-2 h-4 w-4" />
+            )}
+            Save Build
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="space-y-6">
         <div>

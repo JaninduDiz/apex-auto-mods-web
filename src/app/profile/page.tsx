@@ -10,19 +10,15 @@ import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
-import { CustomizationState } from "@/components/customization/CustomizationWorkspace";
+import { type Build } from "@/lib/constants";
 // MOCK DATA: Import mock data. Replace with your actual data fetching logic.
 import { user as mockUser, mockBuilds } from "@/lib/constants";
+import { useRouter } from "next/navigation";
 
-
-interface Build extends CustomizationState {
-  _id: string;
-  carModel: string;
-  createdAt: string;
-}
 
 export default function ProfilePage() {
   const { toast } = useToast();
+  const router = useRouter();
   const [builds, setBuilds] = useState<Build[]>([]);
   const [isLoadingBuilds, setIsLoadingBuilds] = useState(true);
   
@@ -157,12 +153,12 @@ export default function ProfilePage() {
                     </div>
                     <div className="flex-1">
                       <p className="font-bold">{build.carModel}</p>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm text-muted-foreground capitalize">
                         {Object.entries(build.parts).filter(([,v]) => v).map(([k]) => k).join(', ') || "No extra parts"}
                       </p>
                       <p className="text-xs text-muted-foreground mt-1">Saved on {new Date(build.createdAt).toLocaleDateString()}</p>
                     </div>
-                    <Button variant="outline" size="sm">View</Button>
+                    <Button variant="outline" size="sm" onClick={() => router.push(`/customize/${build._id}`)}>View</Button>
                   </Card>
                 ))}
               </div>

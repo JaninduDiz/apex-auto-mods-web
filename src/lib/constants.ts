@@ -1,6 +1,6 @@
 
 import { Wrench, Car, ShieldCheck } from "lucide-react";
-import { CustomizationState } from "@/components/customization/CustomizationWorkspace";
+import { CustomizationState } from "@/app/customize/[id]/page";
 
 // --- TYPES ---
 
@@ -18,7 +18,7 @@ interface ActiveService extends Service {
     progress: number;
 }
 
-interface Build extends CustomizationState {
+export interface Build extends CustomizationState {
   _id: string;
   carModel: string;
   createdAt: string;
@@ -240,7 +240,7 @@ export const activeServices: ActiveService[] = [
     }
 ];
 
-// --- PROFILE MOCK DATA ---
+// --- PROFILE & CUSTOMIZE MOCK DATA ---
 
 export const user = {
     _id: "user123", // This would come from your authentication context
@@ -255,8 +255,7 @@ export const user = {
 };
 
 export const mockBuilds: Build[] = [
-    { _id: '1', carModel: 'Toyota Supra GR', color: '#FF0000', parts: { wheels: true, spoiler: true, bodykit: false, exhaust: true }, createdAt: new Date().toISOString() },
-    { _id: '2', carModel: 'Toyota Supra GR', color: '#0000FF', parts: { wheels: true, spoiler: false, bodykit: true, exhaust: false }, createdAt: new Date().toISOString() },
+    { _id: 'build-1', carModel: 'Toyota Supra GR', color: '#FF0000', parts: { wheels: true, spoiler: true, bodykit: false, exhaust: true }, createdAt: '2023-10-26T10:00:00Z' },
+    { _id: 'build-2', carModel: 'Nissan GTR R35', color: '#0000FF', parts: { wheels: true, spoiler: false, bodykit: true, exhaust: false }, createdAt: '2023-10-25T14:30:00Z' },
+    { _id: 'build-3', carModel: 'Range Rover Evoque', color: '#FFA500', parts: { wheels: true, spoiler: false, bodykit: false, exhaust: true }, createdAt: '2023-09-15T11:00:00Z' },
 ];
-
-    

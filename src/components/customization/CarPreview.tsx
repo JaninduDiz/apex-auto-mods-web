@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
-import { type CustomizationState } from "./CustomizationWorkspace";
+import { type CustomizationState } from "@/app/customize/[id]/page";
 
 export function CarPreview({ customization }: { customization: CustomizationState }) {
   return (

@@ -4,13 +4,14 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Loader2, Wand2, Save } from "lucide-react";
-import { type CustomizationState, type Part } from "./CustomizationWorkspace";
+import { type CustomizationState, type Part } from "@/app/customize/[id]/page";
 import React from "react";
 import { Separator } from "@/components/ui/separator";
 
 interface CustomizationPanelProps {
   customization: CustomizationState;
   setCustomization: React.Dispatch<React.SetStateAction<CustomizationState>>;
+  carModel: string;
   onGetSuggestions: () => Promise<void>;
   suggestions: string[];
   isLoadingSuggestions: boolean;
@@ -28,6 +29,7 @@ const parts: { id: Part; label: string }[] = [
 export function CustomizationPanel({
   customization,
   setCustomization,
+  carModel,
   onGetSuggestions,
   suggestions,
   isLoadingSuggestions,
@@ -52,7 +54,7 @@ export function CustomizationPanel({
         <div className="flex justify-between items-center">
           <div>
             <CardTitle>Customize Your Ride</CardTitle>
-            <CardDescription>Toyota Supra GR</CardDescription>
+            <CardDescription>{carModel}</CardDescription>
           </div>
           <Button onClick={onSaveBuild} disabled={isSavingBuild} size="sm">
             {isSavingBuild ? (

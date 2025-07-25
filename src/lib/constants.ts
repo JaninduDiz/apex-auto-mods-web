@@ -33,10 +33,10 @@ export const hotCollections = [
     price: "$38,700",
     dataAiHint: "orange range rover evoque",
     details: [
-      { value: "3997 CC" },
-      { value: "246.74 BHP" },
-      { value: "5 Speed" },
-      { value: "4 Cylinder" },
+      { type: "CC", value: "3997 CC", label: "Engine" },
+      { type: "BHP", value: "246.74 BHP", label: "Horsepower" },
+      { type: "Speed", value: "5 Speed", label: "Transmission" },
+      { type: "Cylinder", value: "4 Cylinder", label: "Cylinders" },
     ],
     totalRun: "12,500 Km"
   },
@@ -46,10 +46,10 @@ export const hotCollections = [
     price: "$187,900",
     dataAiHint: "white nissan gtr",
     details: [
-      { value: "3799 CC" },
-      { value: "591.4 BHP" },
-      { value: "6 Speed" },
-      { value: "6 Cylinder" },
+      { type: "CC", value: "3799 CC", label: "Engine" },
+      { type: "BHP", value: "591.4 BHP", label: "Horsepower" },
+      { type: "Speed", value: "6 Speed", label: "Transmission" },
+      { type: "Cylinder", value: "6 Cylinder", label: "Cylinders" },
     ],
     totalRun: "17,754 Km"
   }

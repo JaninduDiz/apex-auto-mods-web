@@ -3,7 +3,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import Link from "next/link";
-import { Search, Flame, ArrowRight, Wrench } from "lucide-react";
+import { Search, Flame, ArrowRight, Wrench, Droplets, GitBranch, Settings, Database, Gauge } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,14 @@ import { Progress } from "@/components/ui/progress";
 import React from "react";
 // MOCK DATA: Import mock data. Replace with your actual data fetching logic.
 import { hotCollections, regularCollections, ongoingService } from "@/lib/constants";
+
+
+const iconMap: { [key: string]: React.ElementType } = {
+    'CC': Database,
+    'BHP': Settings,
+    'Speed': GitBranch,
+    'Cylinder': Droplets
+}
 
 
 export default function DashboardPage() {
@@ -91,12 +99,18 @@ export default function DashboardPage() {
                     <p className="text-2xl font-bold mt-4">{car.price} <span className="text-sm font-normal text-muted-foreground">USD</span></p>
                   </div>
                   <div className="w-1/2 grid grid-cols-2 gap-4">
-                    {car.details.map(detail => (
-                      <div key={detail.value} className="bg-background rounded-2xl p-4 flex flex-col items-center justify-center text-center">
-                          <p className="text-sm font-semibold">{detail.value}</p>
-                      </div>
-                    ))}
+                    {car.details.map(detail => {
+                      const Icon = iconMap[detail.type];
+                      return (
+                        <div key={detail.value} className="bg-background rounded-2xl p-4 flex flex-col items-center justify-center text-center">
+                            {Icon && <Icon className="h-6 w-6 mb-2 text-muted-foreground" />}
+                            <p className="text-sm font-semibold">{detail.value}</p>
+                            <p className="text-xs text-muted-foreground">{detail.label}</p>
+                        </div>
+                      )
+                    })}
                      <div className="bg-green-100 text-green-800 rounded-2xl p-4 flex flex-col items-center justify-center text-center col-span-2">
+                        <Gauge className="h-6 w-6 mb-2"/>
                         <p className="text-sm font-semibold">Total Run: {car.totalRun}</p>
                     </div>
                   </div>

@@ -3,7 +3,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { Loader2, Wand2, Save } from "lucide-react";
+import { Loader2, Save } from "lucide-react";
 import { type CustomizationState, type Part } from "@/app/customize/[id]/page";
 import React from "react";
 import { Separator } from "@/components/ui/separator";
@@ -12,9 +12,6 @@ interface CustomizationPanelProps {
   customization: CustomizationState;
   setCustomization: React.Dispatch<React.SetStateAction<CustomizationState>>;
   carModel: string;
-  onGetSuggestions: () => Promise<void>;
-  suggestions: string[];
-  isLoadingSuggestions: boolean;
   onSaveBuild: () => Promise<void>;
   isSavingBuild: boolean;
 }
@@ -30,9 +27,6 @@ export function CustomizationPanel({
   customization,
   setCustomization,
   carModel,
-  onGetSuggestions,
-  suggestions,
-  isLoadingSuggestions,
   onSaveBuild,
   isSavingBuild,
 }: CustomizationPanelProps) {
@@ -102,30 +96,6 @@ export function CustomizationPanel({
               </div>
             ))}
           </div>
-        </div>
-
-        <Separator />
-
-        <div>
-            <h3 className="mb-2 font-medium">AI Suggestions</h3>
-            <Button onClick={onGetSuggestions} disabled={isLoadingSuggestions} className="w-full bg-accent hover:bg-accent/90">
-                {isLoadingSuggestions ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                    <Wand2 className="mr-2 h-4 w-4" />
-                )}
-                Get Modification Ideas
-            </Button>
-            {suggestions.length > 0 && (
-                <div className="mt-4 space-y-2">
-                    <p className="text-sm text-muted-foreground">Popular additions with your selection:</p>
-                    <ul className="list-disc list-inside bg-secondary p-3 rounded-md text-sm space-y-1">
-                        {suggestions.map((suggestion, index) => (
-                            <li key={index}>{suggestion}</li>
-                        ))}
-                    </ul>
-                </div>
-            )}
         </div>
       </CardContent>
     </Card>

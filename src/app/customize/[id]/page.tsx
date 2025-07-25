@@ -5,8 +5,6 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { CarPreview } from "@/components/customization/CarPreview";
 import { CustomizationPanel } from "@/components/customization/CustomizationPanel";
-import { type ModificationSuggestionsOutput } from "@/ai/flows/modification-suggestions";
-import { getModificationSuggestions } from "@/ai/flows/modification-suggestions";
 import { useToast } from "@/hooks/use-toast";
 import { mockBuilds } from "@/lib/constants";
 import { ArrowLeft, Loader2 } from "lucide-react";
@@ -64,33 +62,7 @@ export default function CustomizationWorkspacePage() {
     setIsLoading(false);
   }, [buildId, router, toast]);
 
-  const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
   const [isSavingBuild, setIsSavingBuild] = useState(false);
-
-  const handleSuggestionFetch = async () => {
-    setIsLoadingSuggestions(true);
-    const selectedParts = Object.entries(customization.parts)
-      .filter(([, value]) => value)
-      .map(([key]) => key);
-    
-    try {
-      const result: ModificationSuggestionsOutput = await getModificationSuggestions({
-        carModel,
-        selectedParts,
-      });
-      setSuggestions(result.suggestions);
-    } catch (error) {
-      console.error("Failed to get suggestions:", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Could not fetch AI suggestions. Please try again later.",
-      })
-    } finally {
-      setIsLoadingSuggestions(false);
-    }
-  };
 
   const handleSaveBuild = async () => {
     setIsSavingBuild(true);
@@ -164,9 +136,6 @@ export default function CustomizationWorkspacePage() {
             customization={customization}
             setCustomization={setCustomization}
             carModel={carModel}
-            onGetSuggestions={handleSuggestionFetch}
-            suggestions={suggestions}
-            isLoadingSuggestions={isLoadingSuggestions}
             onSaveBuild={handleSaveBuild}
             isSavingBuild={isSavingBuild}
           />

@@ -4,13 +4,15 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Wrench, Car, Clock, ShieldCheck, ArrowRight, Loader2 } from "lucide-react";
+import { Wrench, Car, Clock, ShieldCheck, ArrowRight, Loader2, Info } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from '@/components/ui/skeleton';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from '@/components/ui/progress';
 
 interface Service {
   name: string;
@@ -19,7 +21,14 @@ interface Service {
   icon: React.ElementType;
 }
 
-const staticServices = [
+interface ActiveService extends Service {
+    id: string;
+    carModel: string;
+    status: "In Progress" | "Completed";
+    progress: number;
+}
+
+const staticServices: Service[] = [
   {
     name: "ECU Tunning",
     description: "Unlock your car's true potential with our custom ECU tunes. More power, better fuel economy.",
@@ -59,20 +68,26 @@ const staticServices = [
 ];
 
 
-const activeServices = [
+const activeServices: ActiveService[] = [
     {
         id: "SRV001",
         carModel: "Nissan GTR R35",
-        serviceName: "Suspension Upgrades",
+        name: "Suspension Upgrades",
+        description: "Improve handling and get the perfect stance with coilovers, lowering springs, and sway bars.",
+        price: "$1,450",
         status: "In Progress",
-        progress: 45
+        progress: 45,
+        icon: Wrench,
     },
     {
         id: "SRV002",
         carModel: "Range Rover Evoque",
-        serviceName: "Wheel & Tire Packages",
+        name: "Wheel & Tire Packages",
+        description: "A wide selection of wheels and tires to fit any style and budget. Mounting and balancing included.",
+        price: "$2,100",
         status: "Completed",
-        progress: 100
+        progress: 100,
+        icon: Wrench,
     }
 ]
 
@@ -81,23 +96,15 @@ export default function ServicesPage() {
   const [isLoadingServices, setIsLoadingServices] = useState(true);
   const [isBooking, setIsBooking] = useState(false);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const [selectedActiveService, setSelectedActiveService] = useState<ActiveService | null>(null);
+  const [isViewingDetails, setIsViewingDetails] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
     const fetchServices = async () => {
       setIsLoadingServices(true);
       try {
-        // In a real app, you'd fetch from your backend API
-        // const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/services`);
-        // if (!response.ok) {
-        //   throw new Error('Failed to fetch services');
-        // }
-        // const data = await response.json();
-        // setServices(data.map((s: any) => ({...s, icon: Wrench}))); // Assuming a default icon
-        
-        // For now, using static data
         setServices(staticServices);
-
       } catch (error) {
         console.error(error);
         toast({
@@ -120,12 +127,16 @@ export default function ServicesPage() {
 
   const handleBookingSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would make a POST request to your backend to create a booking
     setIsBooking(false);
     toast({
       title: "Booking Confirmed!",
       description: `Your appointment for ${selectedService?.name} has been scheduled.`,
     })
+  }
+  
+  const handleViewDetailsClick = (service: ActiveService) => {
+    setSelectedActiveService(service);
+    setIsViewingDetails(true);
   }
 
   return (
@@ -137,69 +148,76 @@ export default function ServicesPage() {
         </p>
       </div>
 
-      {isLoadingServices ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {Array.from({ length: 6 }).map((_, index) => (
-            <Card key={index}>
-              <CardHeader className="flex flex-row items-start gap-4 pb-4">
-                <Skeleton className="w-12 h-12 rounded-full" />
-                <div className="flex-1 space-y-2">
-                  <Skeleton className="h-6 w-3/4" />
-                  <Skeleton className="h-4 w-full" />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <Skeleton className="h-10 w-1/2 ml-auto" />
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {services.map((service) => (
-            <Card key={service.name} className="flex flex-col">
-              <CardHeader className="flex flex-row items-start gap-4 pb-4">
-                <div className="bg-primary/10 p-3 rounded-full">
-                  <service.icon className="w-6 h-6 text-primary" />
-                </div>
-                <div>
-                  <CardTitle>{service.name}</CardTitle>
-                  <CardDescription className="mt-1">{service.description}</CardDescription>
-                </div>
-              </CardHeader>
-              <CardContent className="flex-grow flex flex-col justify-end">
-                <div className="flex justify-between items-center mt-4">
-                  <p className="font-semibold text-primary">{service.price}</p>
-                  <Button onClick={() => handleBookClick(service)}>Book Now</Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
-
-      <section className="mt-20">
-        <h2 className="text-3xl font-bold text-center mb-10">Your Active Services</h2>
-        <div className="space-y-6 max-w-4xl mx-auto">
-            {activeServices.map(service => (
-                 <Card key={service.id} className="p-6 flex items-center gap-6">
-                    <div className="bg-secondary p-4 rounded-full">
-                        {service.status === 'Completed' ? <ShieldCheck className="w-8 h-8 text-green-500"/> : <Clock className="w-8 h-8 text-primary"/>}
+      <Tabs defaultValue="available" className="w-full">
+        <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto">
+          <TabsTrigger value="available">Available Services</TabsTrigger>
+          <TabsTrigger value="active">Your Active Services</TabsTrigger>
+        </TabsList>
+        <TabsContent value="available" className="mt-8">
+            {isLoadingServices ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <Card key={index}>
+                  <CardHeader className="flex flex-row items-start gap-4 pb-4">
+                    <Skeleton className="w-12 h-12 rounded-full" />
+                    <div className="flex-1 space-y-2">
+                      <Skeleton className="h-6 w-3/4" />
+                      <Skeleton className="h-4 w-full" />
                     </div>
-                    <div className="flex-1">
-                        <div className="flex justify-between items-center">
-                            <p className="font-bold text-lg">{service.carModel}</p>
-                            <span className={`px-3 py-1 text-sm rounded-full font-medium ${service.status === 'Completed' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}`}>{service.status}</span>
+                  </CardHeader>
+                  <CardContent>
+                    <Skeleton className="h-10 w-1/2 ml-auto" />
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {services.map((service) => (
+                <Card key={service.name} className="flex flex-col">
+                  <CardHeader className="flex flex-row items-start gap-4 pb-4">
+                    <div className="bg-primary/10 p-3 rounded-full">
+                      <service.icon className="w-6 h-6 text-primary" />
+                    </div>
+                    <div>
+                      <CardTitle>{service.name}</CardTitle>
+                      <CardDescription className="mt-1">{service.description}</CardDescription>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="flex-grow flex flex-col justify-end">
+                    <div className="flex justify-between items-center mt-4">
+                      <p className="font-semibold text-primary">{service.price}</p>
+                      <Button onClick={() => handleBookClick(service)}>Book Now</Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </TabsContent>
+        <TabsContent value="active" className="mt-8">
+            <div className="space-y-6 max-w-4xl mx-auto">
+                {activeServices.map(service => (
+                    <Card key={service.id} className="p-6 flex items-center gap-6 cursor-pointer hover:bg-muted/50 transition-colors" onClick={() => handleViewDetailsClick(service)}>
+                        <div className="bg-secondary p-4 rounded-full">
+                            {service.status === 'Completed' ? <ShieldCheck className="w-8 h-8 text-green-500"/> : <Clock className="w-8 h-8 text-primary"/>}
                         </div>
-                        <p className="text-muted-foreground">{service.serviceName}</p>
-                    </div>
-                    <Button variant="outline" size="icon">
-                        <ArrowRight className="h-5 w-5"/>
-                    </Button>
-                 </Card>
-            ))}
-        </div>
-      </section>
+                        <div className="flex-1">
+                            <div className="flex justify-between items-center">
+                                <p className="font-bold text-lg">{service.carModel}</p>
+                                <span className={`px-3 py-1 text-sm rounded-full font-medium ${service.status === 'Completed' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}`}>{service.status}</span>
+                            </div>
+                            <p className="text-muted-foreground">{service.name}</p>
+                        </div>
+                        <Button variant="outline" size="icon">
+                            <Info className="h-5 w-5"/>
+                        </Button>
+                    </Card>
+                ))}
+            </div>
+        </TabsContent>
+      </Tabs>
+
 
       <Dialog open={isBooking} onOpenChange={setIsBooking}>
         <DialogContent>
@@ -227,6 +245,36 @@ export default function ServicesPage() {
                     <Button type="submit">Confirm Booking</Button>
                 </DialogFooter>
             </form>
+        </DialogContent>
+      </Dialog>
+      
+      <Dialog open={isViewingDetails} onOpenChange={setIsViewingDetails}>
+        <DialogContent>
+            <DialogHeader>
+                <DialogTitle>{selectedActiveService?.name}</DialogTitle>
+                <DialogDescription>
+                    Details for service ID: {selectedActiveService?.id} on your {selectedActiveService?.carModel}
+                </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <p><strong className="font-medium">Description:</strong> {selectedActiveService?.description}</p>
+              <p><strong className="font-medium">Price:</strong> <span className="text-primary font-semibold">{selectedActiveService?.price}</span></p>
+              <div>
+                <strong className="font-medium">Status:</strong>
+                <div className="mt-2">
+                  <div className="flex justify-between items-center">
+                    <span className={`px-3 py-1 text-sm rounded-full font-medium ${selectedActiveService?.status === 'Completed' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}`}>{selectedActiveService?.status}</span>
+                    <span className="text-sm text-muted-foreground">{selectedActiveService?.progress}% Complete</span>
+                  </div>
+                  <Progress value={selectedActiveService?.progress} className="mt-2 h-2"/>
+                </div>
+              </div>
+            </div>
+            <DialogFooter>
+                <DialogClose asChild>
+                    <Button type="button">Close</Button>
+                </DialogClose>
+            </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

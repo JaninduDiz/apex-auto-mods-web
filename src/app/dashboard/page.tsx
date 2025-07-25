@@ -76,6 +76,7 @@ const regularCollections = [
 
 const ongoingService = {
   isSerivceInProgress: true, // set to false to hide the section
+  id: "SRV001",
   carModel: "Toyota Supra GR",
   service: "ECU Tunning",
   progress: 65,
@@ -117,8 +118,10 @@ export default function DashboardPage() {
                             <span>{ongoingService.progress}% Complete</span>
                         </div>
                     </div>
-                     <Button variant="outline" className="rounded-full self-start">
-                        View Details <ArrowRight className="ml-2 h-4 w-4"/>
+                     <Button variant="outline" className="rounded-full self-start" asChild>
+                        <Link href={`/services?tab=active&serviceId=${ongoingService.id}`}>
+                            View Details <ArrowRight className="ml-2 h-4 w-4"/>
+                        </Link>
                     </Button>
                 </CardContent>
             </Card>

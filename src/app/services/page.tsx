@@ -1,7 +1,8 @@
 
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Wrench, Car, Clock, ShieldCheck, ArrowRight, Loader2, Info } from "lucide-react";
@@ -91,13 +92,15 @@ const activeServices: ActiveService[] = [
     }
 ]
 
-export default function ServicesPage() {
+function ServicesComponent() {
+  const searchParams = useSearchParams();
   const [services, setServices] = useState<Service[]>([]);
   const [isLoadingServices, setIsLoadingServices] = useState(true);
   const [isBooking, setIsBooking] = useState(false);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [selectedActiveService, setSelectedActiveService] = useState<ActiveService | null>(null);
   const [isViewingDetails, setIsViewingDetails] = useState(false);
+  const [activeTab, setActiveTab] = useState("available");
   const { toast } = useToast();
 
   useEffect(() => {
@@ -119,6 +122,23 @@ export default function ServicesPage() {
     };
     fetchServices();
   }, [toast]);
+
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    const serviceId = searchParams.get('serviceId');
+
+    if (tab === 'active') {
+      setActiveTab('active');
+    }
+
+    if (serviceId) {
+      const serviceToView = activeServices.find(s => s.id === serviceId);
+      if (serviceToView) {
+        setSelectedActiveService(serviceToView);
+        setIsViewingDetails(true);
+      }
+    }
+  }, [searchParams]);
 
   const handleBookClick = (service: Service) => {
     setSelectedService(service);
@@ -148,7 +168,7 @@ export default function ServicesPage() {
         </p>
       </div>
 
-      <Tabs defaultValue="available" className="w-full">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto">
           <TabsTrigger value="available">Available Services</TabsTrigger>
           <TabsTrigger value="active">Your Active Services</TabsTrigger>
@@ -279,4 +299,12 @@ export default function ServicesPage() {
       </Dialog>
     </div>
   );
+}
+
+export default function ServicesPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <ServicesComponent />
+        </Suspense>
+    )
 }

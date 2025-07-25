@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -9,8 +10,8 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip"
 import {
-    Home,
-    Car,
+    LayoutDashboard,
+    Wrench,
     Settings,
     User,
     SquareStack,
@@ -24,9 +25,9 @@ export function Nav() {
     const pathname = usePathname();
 
     const navLinks = [
-        { href: "/", label: "Dashboard", icon: Home },
+        { href: "/", label: "Dashboard", icon: LayoutDashboard },
         { href: "/customize", label: "Customize", icon: SquareStack },
-        { href: "/services", label: "Services", icon: Car },
+        { href: "/services", label: "Services", icon: Wrench },
         { href: "/settings", label: "Settings", icon: Settings },
     ];
     

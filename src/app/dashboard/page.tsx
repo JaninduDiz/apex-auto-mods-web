@@ -1,10 +1,14 @@
+
+"use client";
+
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { Search, Flame, ArrowRight } from "lucide-react";
+import { Search, Flame, ArrowRight, Wrench } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import React from "react";
 
 const hotCollections = [
   {
@@ -13,10 +17,10 @@ const hotCollections = [
     price: "$38,700",
     dataAiHint: "orange range rover evoque",
     details: [
-      { value: "3997 CC", icon: "power" },
-      { value: "246.74 BHP", icon: "gauge" },
-      { value: "5 Speed", icon: "settings" },
-      { value: "4 Cylinder", icon: "cylinder" },
+      { value: "3997 CC" },
+      { value: "246.74 BHP" },
+      { value: "5 Speed" },
+      { value: "4 Cylinder" },
     ],
     totalRun: "12,500 Km"
   },
@@ -26,10 +30,10 @@ const hotCollections = [
     price: "$187,900",
     dataAiHint: "white nissan gtr",
     details: [
-      { value: "3799 CC", icon: "power" },
-      { value: "591.4 BHP", icon: "gauge" },
-      { value: "6 Speed", icon: "settings" },
-      { value: "6 Cylinder", icon: "cylinder" },
+      { value: "3799 CC" },
+      { value: "591.4 BHP" },
+      { value: "6 Speed" },
+      { value: "6 Cylinder" },
     ],
     totalRun: "17,754 Km"
   }
@@ -70,6 +74,15 @@ const regularCollections = [
   },
 ];
 
+const ongoingService = {
+  isSerivceInProgress: true, // set to false to hide the section
+  carModel: "Toyota Supra GR",
+  service: "ECU Tunning",
+  progress: 65,
+  image: "https://placehold.co/150x100.png",
+  dataAiHint: "white toyota supra"
+};
+
 
 export default function DashboardPage() {
   return (
@@ -77,10 +90,6 @@ export default function DashboardPage() {
       <header className="flex justify-between items-center mb-10">
         <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-2">
-                <div className="w-10 h-10 bg-black flex items-center justify-center rounded-lg">
-                    <div className="w-4 h-4 bg-blue-600 rounded-sm"></div>
-                    <div className="w-4 h-2 bg-white -ml-1 mt-2"></div>
-                </div>
                 <span className="font-bold text-lg">Apex Configurator</span>
             </Link>
         </div>
@@ -89,6 +98,31 @@ export default function DashboardPage() {
           <Input placeholder="Search here" className="pl-10 rounded-full" />
         </div>
       </header>
+
+      {ongoingService.isSerivceInProgress && (
+        <section className="mb-12">
+            <h2 className="text-2xl font-bold mb-4">Ongoing Service</h2>
+            <Card className="rounded-3xl shadow-lg bg-blue-50 border-blue-200">
+                <CardContent className="p-6 flex items-center gap-6">
+                    <Image src={ongoingService.image} width={150} height={100} alt={ongoingService.carModel} data-ai-hint={ongoingService.dataAiHint} className="rounded-2xl object-cover"/>
+                    <div className="flex-1">
+                        <div className="flex justify-between items-center mb-2">
+                            <h3 className="font-bold text-lg">{ongoingService.carModel}</h3>
+                            <span className="text-sm text-muted-foreground font-medium">{ongoingService.service}</span>
+                        </div>
+                        <Progress value={ongoingService.progress} className="h-2"/>
+                        <div className="flex justify-between items-center mt-2 text-sm text-muted-foreground">
+                            <span>In Progress...</span>
+                            <span>{ongoingService.progress}% Complete</span>
+                        </div>
+                    </div>
+                     <Button variant="outline" className="rounded-full self-start">
+                        View Details <ArrowRight className="ml-2 h-4 w-4"/>
+                    </Button>
+                </CardContent>
+            </Card>
+        </section>
+      )}
 
       <section>
         <h2 className="text-2xl font-bold mb-4 flex items-center"><Flame className="mr-2 text-primary"/> Hot Collections</h2>

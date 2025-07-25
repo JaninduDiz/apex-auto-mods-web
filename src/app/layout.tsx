@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { Nav } from '@/components/layout/Nav';
 
 export const metadata: Metadata = {
-  title: 'Apex Configurator',
+  title: 'Apex Auto Mods',
   description: 'Customize your ride with Apex Auto Mods Garage.',
 };
 

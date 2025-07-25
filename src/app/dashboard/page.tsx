@@ -91,7 +91,7 @@ export default function DashboardPage() {
         <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-2">
                 <Wrench className="h-6 w-6 text-primary" />
-                <span className="font-bold text-lg">Apex Configurator</span>
+                <span className="font-bold text-lg">Apex Auto Mods</span>
             </Link>
         </div>
         <div className="relative w-1/3">

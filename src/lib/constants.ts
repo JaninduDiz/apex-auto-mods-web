@@ -92,7 +92,7 @@ export const regularCollections = [
 
 export const ongoingService = {
   isSerivceInProgress: true, // set to false to hide the section
-  id: "SRV001",
+  id: "SRV003",
   carModel: "Toyota Supra GR",
   service: "ECU Tunning",
   progress: 65,
@@ -162,6 +162,16 @@ export const activeServices: ActiveService[] = [
         price: "$2,100",
         status: "Completed",
         progress: 100,
+        icon: Wrench,
+    },
+    {
+        id: "SRV003",
+        carModel: "Toyota Supra GR",
+        name: "ECU Tunning",
+        description: "Unlock your car's true potential with our custom ECU tunes. More power, better fuel economy.",
+        price: "$750",
+        status: "In Progress",
+        progress: 65,
         icon: Wrench,
     }
 ];

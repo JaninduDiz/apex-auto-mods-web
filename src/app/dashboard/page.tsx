@@ -1,5 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 
 const savedBuilds = [
   {
@@ -66,7 +67,7 @@ export default function DashboardPage() {
         ) : (
           <div className="text-center py-16 border-2 border-dashed rounded-lg">
             <h3 className="text-xl font-medium">No Saved Builds Yet</h3>
-            <p className="text-muted-foreground mt-2">Go to the customization page to create your first build!</p>
+            <p className="text-muted-foreground mt-2">Go to the <Link href="/customize" className="text-primary underline">customization page</Link> to create your first build!</p>
           </div>
         )}
       </div>

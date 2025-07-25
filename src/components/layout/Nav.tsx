@@ -5,63 +5,86 @@ import { usePathname } from 'next/navigation';
 import {
     Tooltip,
     TooltipContent,
+    TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip"
 import {
-    Wrench,
-    LayoutDashboard,
+    Home,
     Car,
     Settings,
-    LogIn,
-    UserPlus
+    User,
+    SquareStack,
+    Bell
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 
 export function Nav() {
     const pathname = usePathname();
 
     const navLinks = [
-        { href: "/", label: "Dashboard", icon: LayoutDashboard },
-        { href: "/customize", label: "Customize", icon: Car },
-        { href: "/services", label: "Services", icon: Settings },
+        { href: "/", label: "Dashboard", icon: Home },
+        { href: "/customize", label: "Customize", icon: SquareStack },
+        { href: "/services", label: "Services", icon: Car },
+        { href: "/settings", label: "Settings", icon: Settings },
     ];
-
-    const bottomLinks = [
-        { href: "/login", label: "Login", icon: LogIn },
-        { href: "/register", label: "Sign Up", icon: UserPlus },
-    ];
-
-    const renderLink = (link: { href: string, label: string, icon: React.ElementType }) => {
-        const Icon = link.icon;
-        const isActive = pathname === link.href;
-        return (
-            <Tooltip key={link.href}>
-                <TooltipTrigger asChild>
-                    <Link
-                        href={link.href}
-                        className={cn(
-                            "flex h-12 w-12 items-center justify-center rounded-lg transition-colors",
-                            isActive ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"
-                        )}
-                    >
-                        <Icon className="h-6 w-6" />
-                        <span className="sr-only">{link.label}</span>
-                    </Link>
-                </TooltipTrigger>
-                <TooltipContent side="right">{link.label}</TooltipContent>
-            </Tooltip>
-        )
-    };
-
+    
     return (
-        <nav className="flex flex-col items-center gap-4 px-4 w-20 flex-1">
-            <div className="flex flex-col items-center gap-4">
-                {navLinks.map(renderLink)}
-            </div>
-            <div className="mt-auto flex flex-col items-center gap-4">
-                {bottomLinks.map(renderLink)}
-            </div>
-        </nav>
+        <TooltipProvider>
+            <nav className="flex flex-col items-center justify-between w-24 bg-sidebar text-sidebar-foreground p-4 rounded-r-3xl">
+                <div className="flex flex-col items-center gap-8">
+                    <Link href="/" className="flex items-center gap-2">
+                        <div className="w-10 h-10 bg-white flex items-center justify-center rounded-lg">
+                            <div className="w-4 h-4 bg-blue-600 rounded-sm"></div>
+                            <div className="w-4 h-2 bg-black -ml-1 mt-2"></div>
+                        </div>
+                    </Link>
+
+                    <div className="flex flex-col items-center gap-4">
+                        {navLinks.map((link) => {
+                            const Icon = link.icon;
+                            const isActive = pathname === link.href;
+                            return (
+                                <Tooltip key={link.href}>
+                                    <TooltipTrigger asChild>
+                                        <Link
+                                            href={link.href}
+                                            className={cn(
+                                                "flex h-12 w-12 items-center justify-center rounded-lg transition-colors",
+                                                isActive ? "bg-sidebar-accent text-sidebar-accent-foreground" : "hover:bg-sidebar-accent/50"
+                                            )}
+                                        >
+                                            <Icon className="h-6 w-6" />
+                                            <span className="sr-only">{link.label}</span>
+                                        </Link>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="right">{link.label}</TooltipContent>
+                                </Tooltip>
+                            )
+                        })}
+                    </div>
+                </div>
+                <div className="flex flex-col items-center gap-4">
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <button className="flex h-12 w-12 items-center justify-center rounded-lg transition-colors hover:bg-sidebar-accent/50">
+                                <Bell className="h-6 w-6" />
+                                <span className="sr-only">Notifications</span>
+                            </button>
+                        </TooltipTrigger>
+                        <TooltipContent side="right">Notifications</TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Link href="/profile">
+                               <Image src="https://placehold.co/40x40.png" width={40} height={40} alt="User Profile" className="rounded-full" data-ai-hint="man avatar"/>
+                            </Link>
+                        </TooltipTrigger>
+                        <TooltipContent side="right">Profile</TooltipContent>
+                    </Tooltip>
+                </div>
+            </nav>
+        </TooltipProvider>
     );
 }

@@ -1,0 +1,173 @@
+# Comprehensive Backend Integration Guide
+
+This document outlines the necessary steps and backend API design required to connect your Node.js server with this pre-configured Next.js frontend.
+
+## 1. Environment Variable Setup
+
+The first and most crucial step is to tell the Next.js application where your backend server is located.
+
+-   **File**: `.env`
+-   **Variable**: `NEXT_PUBLIC_API_BASE_URL`
+-   **Action**: Update this variable with the full URL of your deployed or local backend server.
+    -   Example for local development: `NEXT_PUBLIC_API_BASE_URL=http://localhost:3001/api`
+    -   Example for production: `NEXT_PUBLIC_API_BASE_URL=https://your-api.yourdomain.com/api`
+
+## 2. API Endpoint Implementation
+
+Your Node.js backend needs to implement the following endpoints. The frontend is already set up to call them.
+
+### Authentication Endpoints
+
+**Technology:** Use **JWT (JSON Web Tokens)** for authentication. Upon successful login, the backend should generate a JWT and send it back to the client. The client will then include this token in the `Authorization` header for all subsequent authenticated requests (e.g., `Authorization: Bearer <token>`).
+
+**Password Hashing:** Use **bcrypt** to hash user passwords before storing them in the database.
+
+**A. Register New User**
+-   **Endpoint**: `POST /auth/register`
+-   **Request Body (JSON)**:
+    ```json
+    {
+      "firstName": "String",
+      "lastName": "String",
+      "email": "String",
+      "password": "String"
+    }
+    ```
+-   **Backend Logic**:
+    1.  Validate the input.
+    2.  Check if a user with the given email already exists.
+    3.  Hash the `password` using bcrypt.
+    4.  Create a new user in your `users` collection/table with a combined `name` field.
+    5.  Return a success message.
+-   **Success Response (201 Created)**:
+    ```json
+    { "message": "User registered successfully" }
+    ```
+
+**B. Login User**
+-   **Endpoint**: `POST /auth/login`
+-   **Request Body (JSON)**:
+    ```json
+    {
+      "email": "String",
+      "password": "String"
+    }
+    ```
+-   **Backend Logic**:
+    1.  Find the user by `email`.
+    2.  If the user exists, compare the provided `password` with the stored hash using `bcrypt.compare()`.
+    3.  If the password is correct, generate a JWT containing the user's ID (`userId`).
+    4.  Return the JWT to the client.
+-   **Success Response (200 OK)**:
+    ```json
+    { "token": "your_generated_jwt_string" }
+    ```
+
+### Customization & Data Endpoints
+
+**A. List Car Modification Services**
+-   **Endpoint**: `GET /services`
+-   **Request Body**: None
+-   **Backend Logic**: Fetch all documents/rows from your `services` collection/table.
+-   **Success Response (200 OK)**:
+    ```json
+    [
+      {
+        "id": "String",
+        "name": "String",
+        "description": "String",
+        "price": "String"
+      },
+      ...
+    ]
+    ```
+
+**B. Save a New Car Customization (Authenticated)**
+-   **Endpoint**: `POST /builds`
+-   **Headers**: Must include `Authorization: Bearer <token>`
+-   **Request Body (JSON)**:
+    ```json
+    {
+      "carModel": "String",
+      "color": "String", // e.g., "#3F51B5"
+      "parts": {
+        "wheels": "Boolean",
+        "spoiler": "Boolean",
+        "bodykit": "Boolean",
+        "exhaust": "Boolean"
+      }
+    }
+    ```
+-   **Backend Logic**:
+    1.  Verify the JWT to get the authenticated `userId`.
+    2.  Create a new document/row in your `builds` collection/table, associating it with the `userId`.
+    3.  Set `createdAt` to the current timestamp.
+-   **Success Response (201 Created)**:
+    ```json
+    { "message": "Build saved successfully", "buildId": "new_build_id" }
+    ```
+
+**C. Get Saved Builds for a User (Authenticated)**
+-   **Endpoint**: `GET /builds/:userId`
+-   **Headers**: Can be an authenticated route to ensure only the owner or specific users can view builds.
+-   **URL Parameter**: `userId` of the user whose builds are being requested.
+-   **Backend Logic**:
+    1.  (Optional) Verify JWT.
+    2.  Find all builds in the `builds` collection/table where `userId` matches the parameter.
+-   **Success Response (200 OK)**:
+    ```json
+    [
+      {
+        "_id": "String", // or "id"
+        "userId": "String",
+        "carModel": "String",
+        "color": "String",
+        "parts": { ... },
+        "createdAt": "ISOStringDate"
+      },
+      ...
+    ]
+    ```
+
+## 3. Database Collections/Tables Schema
+
+Your MongoDB collections or SQL tables should be structured as follows:
+
+**`users`**
+```
+{
+  _id: ObjectId,        // or a UUID for 'id'
+  name: String,
+  email: String,        // Should be unique
+  passwordHash: String, // The hashed password
+}
+```
+
+**`services`**
+```
+{
+  _id: ObjectId,        // or a UUID for 'id'
+  name: String,
+  description: String,
+  price: String         // e.g., "Starting from $500"
+}
+```
+
+**`builds`**
+```
+{
+  _id: ObjectId,        // or a UUID for 'id'
+  userId: ObjectId,     // Reference to the 'users' collection
+  carModel: String,
+  color: String,
+  parts: {
+    wheels: Boolean,
+    spoiler: Boolean,
+    bodykit: Boolean,
+    exhaust: Boolean,
+  },
+  createdAt: Date
+}
+```
+
+By following this guide, you will be able to successfully connect your backend server with the frontend application.

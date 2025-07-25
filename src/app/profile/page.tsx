@@ -5,15 +5,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { User, Mail, Phone, MapPin, Edit, Paintbrush, Loader2 } from "lucide-react";
+import { User, Mail, Phone, MapPin, Edit, Paintbrush, Loader2, LogOut } from "lucide-react";
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { type Build } from "@/lib/constants";
 // MOCK DATA: Import mock data. Replace with your actual data fetching logic.
-import { user as mockUser, mockBuilds } from "@/lib/constants";
+import { mockBuilds } from "@/lib/constants";
 import { useRouter } from "next/navigation";
+import { useUserStore } from "@/store/user-store";
 
 
 export default function ProfilePage() {
@@ -21,12 +22,12 @@ export default function ProfilePage() {
   const router = useRouter();
   const [builds, setBuilds] = useState<Build[]>([]);
   const [isLoadingBuilds, setIsLoadingBuilds] = useState(true);
-  
-  // MOCK DATA: Using mock user data. In a real app, this would come from an auth context/hook.
-  const user = mockUser;
+
+  const { user, logout } = useUserStore();
 
   useEffect(() => {
     const fetchBuilds = async () => {
+      if (!user?._id) return;
       setIsLoadingBuilds(true);
       try {
         // TODO: Replace this with an actual API call to your backend.
@@ -39,13 +40,8 @@ export default function ProfilePage() {
         // setBuilds(data);
         
         // Using mock data for demonstration.
-        // The API call was commented out, so we use mockBuilds directly.
-        // When you implement the backend, you can remove the line below.
-        if (true) { // This is just to simulate a successful fetch for now
-           setBuilds(mockBuilds);
-        } else {
-           throw new Error("Failed to fetch builds. Displaying mock data.");
-        }
+        await new Promise(res => setTimeout(res, 500));
+        setBuilds(mockBuilds);
 
       } catch (error: any) {
         toast({
@@ -58,11 +54,26 @@ export default function ProfilePage() {
       }
     };
     
-    // We check for user._id before fetching, as it would be needed for the API call
-    if(user._id) {
-      fetchBuilds();
-    }
-  }, [toast, user._id]);
+    fetchBuilds();
+  }, [toast, user?._id]);
+
+  const handleLogout = () => {
+    logout();
+    router.push('/login');
+    toast({
+        title: "Logged Out",
+        description: "You have been successfully logged out.",
+    });
+  }
+  
+  if (!user) {
+    return (
+        <div className="flex items-center justify-center h-full">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            <p className="ml-4">Loading profile...</p>
+        </div>
+    )
+  }
 
 
   return (
@@ -89,9 +100,14 @@ export default function ProfilePage() {
               <CardTitle className="text-2xl md:text-3xl">{user.name}</CardTitle>
               <CardDescription className="text-muted-foreground">{user.email}</CardDescription>
             </div>
-            <Button variant="outline" className="w-full md:w-auto">
-              <Edit className="mr-2 h-4 w-4" /> Edit Profile
-            </Button>
+            <div className="flex gap-2 w-full md:w-auto">
+              <Button variant="outline" className="flex-1 md:flex-none">
+                <Edit className="mr-2 h-4 w-4" /> Edit Profile
+              </Button>
+               <Button variant="destructive" onClick={handleLogout} className="flex-1 md:flex-none">
+                <LogOut className="mr-2 h-4 w-4" /> Logout
+              </Button>
+            </div>
           </div>
 
           <p className="mt-4 text-foreground/90">{user.bio}</p>

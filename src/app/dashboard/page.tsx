@@ -12,6 +12,7 @@ import React from "react";
 // MOCK DATA: Import mock data. Replace with your actual data fetching logic.
 import { hotCollections, regularCollections, ongoingService } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import { useUserStore } from "@/store/user-store";
 
 
 const iconMap: { [key: string]: React.ElementType } = {
@@ -24,6 +25,7 @@ const iconMap: { [key: string]: React.ElementType } = {
 
 
 export default function DashboardPage() {
+  const user = useUserStore((state) => state.user);
   // TODO: In a real application, you would fetch this data from your backend.
   // For example:
   // const [hotCollections, setHotCollections] = useState([]);
@@ -37,7 +39,7 @@ export default function DashboardPage() {
     <div className="bg-background text-foreground min-h-screen p-4 md:p-8 pb-20 md:pb-8">
       <header className="flex justify-between items-center mb-10">
         <div>
-          <h1 className="text-2xl font-bold">Good morning, Jeff!</h1>
+          <h1 className="text-2xl font-bold">Good morning, {user?.name.split(' ')[0]}!</h1>
           <p className="text-muted-foreground">Welcome back to your garage.</p>
         </div>
         <div className="relative w-1/3 hidden md:block">

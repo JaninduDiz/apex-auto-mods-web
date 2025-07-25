@@ -19,10 +19,13 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import { useUserStore } from "@/store/user-store";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 
 export function Nav() {
     const pathname = usePathname();
+    const { isAuthenticated, user } = useUserStore();
 
     const navLinks = [
         { href: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -72,6 +75,7 @@ export function Nav() {
                             })}
                         </div>
                     </div>
+                    {isAuthenticated && user && (
                     <div className="flex flex-col items-center gap-4">
                         <Tooltip>
                             <TooltipTrigger asChild>
@@ -85,12 +89,16 @@ export function Nav() {
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <Link href="/profile">
-                                   <Image src="https://placehold.co/40x40.png" width={40} height={40} alt="User Profile" className="rounded-full" data-ai-hint="man avatar"/>
+                                   <Avatar>
+                                        <AvatarImage src={user.avatarUrl} alt={user.name} data-ai-hint="man avatar"/>
+                                        <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                                    </Avatar>
                                 </Link>
                             </TooltipTrigger>
                             <TooltipContent side="right">Profile</TooltipContent>
                         </Tooltip>
                     </div>
+                    )}
                 </nav>
             </TooltipProvider>
 

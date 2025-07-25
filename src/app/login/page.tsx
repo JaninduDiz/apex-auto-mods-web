@@ -16,10 +16,13 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
 import { Loader2 } from "lucide-react"
+import { useUserStore } from "@/store/user-store"
 
 export default function LoginForm() {
   const router = useRouter()
   const { toast } = useToast();
+  const login = useUserStore((state) => state.login);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -29,21 +32,8 @@ export default function LoginForm() {
     setIsLoading(true);
 
     try {
-      // In a real app, you'd fetch from your backend API
-      // const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login`, {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ email, password }),
-      // });
-
-      // if (!response.ok) {
-      //   const errorData = await response.json();
-      //   throw new Error(errorData.message || "Login failed");
-      // }
-      // const data = await response.json();
-      // localStorage.setItem('token', data.token); // Example of storing a JWT
+      await login(email, password);
       
-      console.log("Dummy login successful");
       toast({
         title: "Login Successful",
         description: "Redirecting to your dashboard...",

@@ -31,6 +31,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -40,6 +46,7 @@ import { useUserStore } from "@/store/user-store";
 import { type Service, type ActiveService } from "@/lib/constants";
 import { LoginPromptDialog } from "@/components/layout/LoginPromptDialog";
 import Image from "next/image";
+import Link from "next/link";
 
 function ServicesComponent() {
   const searchParams = useSearchParams();
@@ -50,6 +57,10 @@ function ServicesComponent() {
     isLoading,
     fetchServices,
     getActiveServiceById,
+    userVehicles,
+    fetchUserVehicles,
+    isLoadingVehicles,
+    addServiceBooking,
   } = useDataStore();
   const { isAuthenticated, checkAuth } = useUserStore();
 
@@ -61,11 +72,19 @@ function ServicesComponent() {
   const [activeTab, setActiveTab] = useState("available");
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const [selectedVehicleId, setSelectedVehicleId] = useState<string>("");
+  const [serviceNotes, setServiceNotes] = useState<string>("");
   const { toast } = useToast();
 
   useEffect(() => {
     fetchServices();
   }, [fetchServices]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchUserVehicles();
+    }
+  }, [isAuthenticated, fetchUserVehicles]);
 
   useEffect(() => {
     const verifyAuth = async () => {
@@ -106,18 +125,54 @@ function ServicesComponent() {
   ]);
 
   const handleBookClick = (service: Service) => {
+    if (!isAuthenticated) {
+      setShowLoginPrompt(true);
+      return;
+    }
     setSelectedService(service);
+    setSelectedVehicleId("");
+    setServiceNotes("");
     setIsBooking(true);
   };
 
   const handleBookingSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, this would call an action in your store to book a service.
-    // e.g., bookNewService({ serviceName: selectedService.name, ... })
+
+    if (!selectedVehicleId) {
+      toast({
+        title: "Vehicle Required",
+        description: "Please select a vehicle for this service.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const selectedVehicle = userVehicles.find(
+      (v) => v.id === selectedVehicleId
+    );
+
+    // Create booking object
+    const booking = {
+      id: `booking_${Date.now()}`,
+      serviceId: selectedService?.id,
+      serviceName: selectedService?.name,
+      vehicleId: selectedVehicleId,
+      vehicleInfo: `${selectedVehicle?.year} ${selectedVehicle?.make} ${selectedVehicle?.carModel}`,
+      notes: serviceNotes,
+      status: "Pending",
+      createdAt: new Date().toISOString(),
+    };
+
+    // Store booking using data store (includes localStorage backup)
+    addServiceBooking(booking);
+
+    // TODO: When backend is ready, replace above with:
+    // await api.post('/bookings', booking);
+
     setIsBooking(false);
     toast({
       title: "Booking Confirmed!",
-      description: `Your appointment for ${selectedService?.name} has been scheduled.`,
+      description: `Your appointment for ${selectedService?.name} has been scheduled for your ${selectedVehicle?.year} ${selectedVehicle?.make} ${selectedVehicle?.carModel}.`,
     });
   };
 
@@ -315,21 +370,69 @@ function ServicesComponent() {
           <DialogHeader>
             <DialogTitle>Book: {selectedService?.name}</DialogTitle>
             <DialogDescription>
-              Fill in your vehicle details to schedule your service.
+              Select your vehicle and provide any additional details for your
+              service.
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleBookingSubmit}>
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="vehicle-model" className="text-right">
-                  Vehicle Model
+                <Label htmlFor="vehicle-select" className="text-right">
+                  Vehicle
                 </Label>
-                <Input
-                  id="vehicle-model"
-                  required
-                  placeholder="e.g., Toyota Supra GR"
-                  className="col-span-3"
-                />
+                <div className="col-span-3">
+                  {isLoadingVehicles ? (
+                    <div className="flex items-center gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <span className="text-sm text-muted-foreground">
+                        Loading vehicles...
+                      </span>
+                    </div>
+                  ) : userVehicles.length === 0 ? (
+                    <div className="text-sm">
+                      <p className="text-muted-foreground mb-2">
+                        No vehicles found. Please add a vehicle in your profile
+                        first.
+                      </p>
+                      <Link href="/profile">
+                        <Button variant="outline" size="sm">
+                          Go to Profile
+                        </Button>
+                      </Link>
+                    </div>
+                  ) : (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start"
+                        >
+                          {selectedVehicleId
+                            ? (() => {
+                                const vehicle = userVehicles.find(
+                                  (v) => v.id === selectedVehicleId
+                                );
+                                return `${vehicle?.year} ${vehicle?.make} ${vehicle?.carModel}`;
+                              })()
+                            : "Select a vehicle"}
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="w-full">
+                        {userVehicles.map((vehicle) => (
+                          <DropdownMenuItem
+                            key={vehicle.id}
+                            onClick={() => setSelectedVehicleId(vehicle.id)}
+                          >
+                            {vehicle.year} {vehicle.make} {vehicle.carModel}
+                            <span className="ml-2 text-xs text-muted-foreground">
+                              ({vehicle.color})
+                            </span>
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )}
+                </div>
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="notes" className="text-right">
@@ -337,6 +440,8 @@ function ServicesComponent() {
                 </Label>
                 <Textarea
                   id="notes"
+                  value={serviceNotes}
+                  onChange={(e) => setServiceNotes(e.target.value)}
                   placeholder="Any specific requests or issues..."
                   className="col-span-3"
                 />
@@ -348,7 +453,12 @@ function ServicesComponent() {
                   Cancel
                 </Button>
               </DialogClose>
-              <Button type="submit">Confirm Booking</Button>
+              <Button
+                type="submit"
+                disabled={!selectedVehicleId || userVehicles.length === 0}
+              >
+                Confirm Booking
+              </Button>
             </DialogFooter>
           </form>
         </DialogContent>

@@ -90,6 +90,7 @@ export interface ApiService {
   name: string;
   description?: string;
   price: number;
+  iconName?: string;
   createdAt: string;
   __v?: number;
 }
@@ -105,7 +106,7 @@ export interface UpdateServiceRequest extends Partial<CreateServiceRequest> {}
 // Frontend Domain Types (what the UI uses - mapped from API types)
 export interface User {
   _id: string;
-  name: string; // mapped from username
+  name: string;
   email: string;
   avatarUrl?: string;
   bio?: string;
@@ -114,7 +115,7 @@ export interface User {
 }
 
 export interface Vehicle {
-  id: string; // mapped from _id
+  id: string;
   userId: string;
   make: string;
   carModel: string;
@@ -140,7 +141,7 @@ export const mapApiUserToUser = (apiUser: ApiUser): User => ({
   avatarUrl:
     "https://www.nicepng.com/png/detail/128-1280406_view-user-icon-png-user-circle-icon-png.png",
   bio: "Car enthusiast and professional modifier. Passionate about creating unique and high-performance vehicles.",
-  followers: 0, // Default values for new users
+  followers: 0,
   following: 0,
 });
 
@@ -161,4 +162,29 @@ export const mapApiBuildToBuild = (apiBuild: ApiBuild): Build => ({
   color: apiBuild.color,
   selectedParts: apiBuild.selectedParts,
   createdAt: apiBuild.createdAt,
+});
+
+// Helper function to map icon names to components (for services)
+import { Wrench, Car, ShieldCheck } from "lucide-react";
+
+const getIconFromName = (iconName?: string) => {
+  switch (iconName) {
+    case "Car":
+      return Car;
+    case "ShieldCheck":
+      return ShieldCheck;
+    case "Wrench":
+    default:
+      return Wrench;
+  }
+};
+
+export const mapApiServiceToService = (
+  apiService: ApiService
+): import("@/lib/constants").Service => ({
+  id: apiService._id,
+  name: apiService.name,
+  description: apiService.description || "",
+  price: `Starting from $${apiService.price}`,
+  icon: getIconFromName(apiService.iconName),
 });

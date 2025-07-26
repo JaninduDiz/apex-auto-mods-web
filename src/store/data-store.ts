@@ -3,7 +3,6 @@ import {
   hotCollections as mockHotCollections,
   regularCollections as mockRegularCollections,
   ongoingService as mockOngoingService,
-  staticServices,
   activeServices as mockActiveServices,
   type HotCollection,
   type RegularCollection,
@@ -15,6 +14,7 @@ import type {
   ApiResponse,
   ApiVehicle,
   ApiBuild,
+  ApiService,
   CreateVehicleRequest,
   UpdateVehicleRequest,
   CreateBuildRequest,
@@ -22,7 +22,11 @@ import type {
   Vehicle,
   Build,
 } from "@/types/api";
-import { mapApiVehicleToVehicle, mapApiBuildToBuild } from "@/types/api";
+import {
+  mapApiVehicleToVehicle,
+  mapApiBuildToBuild,
+  mapApiServiceToService,
+} from "@/types/api";
 
 type NewVehicle = CreateVehicleRequest;
 type NewBuild = CreateBuildRequest;
@@ -35,6 +39,7 @@ interface DataState {
   services: Service[];
   activeServices: ActiveService[];
   userVehicles: Vehicle[];
+  pendingBookings: any[];
   isLoading: boolean;
   isLoadingBuilds: boolean;
   isLoadingVehicles: boolean;
@@ -53,6 +58,7 @@ interface DataState {
     vehicle: Partial<NewVehicle>
   ) => Promise<void>;
   deleteVehicle: (vehicleId: string) => Promise<void>;
+  addServiceBooking: (booking: any) => void;
   clearUserData: () => void;
 }
 
@@ -71,13 +77,14 @@ const useDataStore = create<DataState>((set, get) => ({
   services: [],
   activeServices: [],
   userVehicles: [],
+  pendingBookings: [],
   isLoading: false,
   isLoadingBuilds: false,
   isLoadingVehicles: false,
 
   fetchDashboardData: async () => {
     set({ isLoading: true });
-    // This data remains mocked as per requirements
+    // This data remains mocked
     await new Promise((resolve) => setTimeout(resolve, 500));
     set({
       hotCollections: mockHotCollections,
@@ -111,14 +118,35 @@ const useDataStore = create<DataState>((set, get) => ({
 
   fetchServices: async () => {
     set({ isLoading: true });
-    // This data remains mocked as per requirements
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    set({
-      services: staticServices,
-      activeServices: mockActiveServices,
-      ongoingService: mockOngoingService,
-      isLoading: false,
-    });
+    try {
+      // Fetch services from API using the configured api instance with proper typing
+      const response = await api.get<ApiResponse<ApiService[]>>("/services");
+      const apiServices = response.data.data || response.data || [];
+
+      // Ensure we have an array
+      if (!Array.isArray(apiServices)) {
+        throw new Error("API response is not an array");
+      }
+
+      // Map API services to frontend Service type using the mapper
+      const services = apiServices.map(mapApiServiceToService);
+
+      set({
+        services,
+        activeServices: mockActiveServices, // Keep mocked for now
+        ongoingService: mockOngoingService, // Keep mocked for now
+        isLoading: false,
+      });
+    } catch (error) {
+      console.error("Failed to fetch services from API:", error);
+      // Fallback to empty array on error - services will be loaded from API
+      set({
+        services: [],
+        activeServices: mockActiveServices,
+        ongoingService: mockOngoingService,
+        isLoading: false,
+      });
+    }
   },
 
   fetchUserVehicles: async () => {
@@ -242,10 +270,23 @@ const useDataStore = create<DataState>((set, get) => ({
     }
   },
 
+  addServiceBooking: (booking) => {
+    set((state) => ({
+      pendingBookings: [...state.pendingBookings, booking],
+    }));
+    // Also store in localStorage as backup
+    const existingBookings = JSON.parse(
+      localStorage.getItem("serviceBookings") || "[]"
+    );
+    existingBookings.push(booking);
+    localStorage.setItem("serviceBookings", JSON.stringify(existingBookings));
+  },
+
   clearUserData: () => {
     set({
       builds: [],
       userVehicles: [],
+      pendingBookings: [],
       hotCollections: [],
       regularCollections: [],
       ongoingService: {

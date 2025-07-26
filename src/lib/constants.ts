@@ -179,68 +179,7 @@ export const regularCollections: RegularCollection[] = [
   },
 ];
 
-export const ongoingService = {
-  isSerivceInProgress: true, // set to false to hide the section
-  id: "SRV003",
-  carModel: "Toyota Supra GR",
-  service: "ECU Tunning",
-  progress: 65,
-  image:
-    "https://www.nicepng.com/png/detail/926-9269336_range-rover-evoque-png.png",
-};
-
 // --- SERVICES MOCK DATA ---
-
-export const staticServices: Service[] = [
-  {
-    id: "SVC001",
-    name: "ECU Tunning",
-    description:
-      "Unlock your car's true potential with our custom ECU tunes. More power, better fuel economy.",
-    price: "Starting from $500",
-    icon: Wrench,
-  },
-  {
-    id: "SVC002",
-    name: "Performance Exhaust Systems",
-    description:
-      "Upgrade your car's sound and performance with a high-flow exhaust system from top brands.",
-    price: "Starting from $800",
-    icon: Wrench,
-  },
-  {
-    id: "SVC003",
-    name: "Suspension Upgrades",
-    description:
-      "Improve handling and get the perfect stance with coilovers, lowering springs, and sway bars.",
-    price: "Starting from $1200",
-    icon: Wrench,
-  },
-  {
-    id: "SVC004",
-    name: "Custom Body Kits",
-    description:
-      "Transform the look of your car with our wide selection of body kits. Professional installation.",
-    price: "Contact for quote",
-    icon: Car,
-  },
-  {
-    id: "SVC005",
-    name: "Vinyl Wraps & Paint Protection",
-    description:
-      "Change your car's color with a custom vinyl wrap or protect your paint with our PPF services.",
-    price: "Starting from $2000",
-    icon: ShieldCheck,
-  },
-  {
-    id: "SVC006",
-    name: "Wheel & Tire Packages",
-    description:
-      "A wide selection of wheels and tires to fit any style and budget. Mounting and balancing included.",
-    price: "Starting from $1500",
-    icon: Wrench,
-  },
-];
 
 export const activeServices: ActiveService[] = [
   {
@@ -277,6 +216,16 @@ export const activeServices: ActiveService[] = [
     icon: Wrench,
   },
 ];
+
+export const ongoingService = {
+  isSerivceInProgress: true, // set to false to hide the section
+  id: "SRV003",
+  carModel: "Toyota Supra GR",
+  service: "ECU Tunning",
+  progress: 65,
+  image:
+    "https://www.nicepng.com/png/detail/926-9269336_range-rover-evoque-png.png",
+};
 
 // --- PROFILE & CUSTOMIZE MOCK DATA ---
 

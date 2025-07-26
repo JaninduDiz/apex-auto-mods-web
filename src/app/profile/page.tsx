@@ -134,36 +134,54 @@ export default function ProfilePage() {
 
           <p className="mt-4 text-foreground/90">{user.bio}</p>
 
-          <div className="mt-6 flex gap-8">
-            <div className="text-center">
-              <p className="text-2xl font-bold">{builds.length}</p>
-              <p className="text-sm text-muted-foreground">Builds</p>
+          <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="text-center p-4 bg-muted/30 rounded-lg">
+              <p className="text-2xl font-bold text-primary">{builds.length}</p>
+              <p className="text-sm text-muted-foreground font-medium">
+                Builds
+              </p>
             </div>
-            <div className="text-center">
-              <p className="text-2xl font-bold">{userVehicles.length}</p>
-              <p className="text-sm text-muted-foreground">Vehicles</p>
+            <div className="text-center p-4 bg-muted/30 rounded-lg">
+              <p className="text-2xl font-bold text-primary">
+                {userVehicles.length}
+              </p>
+              <p className="text-sm text-muted-foreground font-medium">
+                Vehicles
+              </p>
             </div>
-            <div className="text-center">
-              <p className="text-2xl font-bold">
+            <div className="text-center p-4 bg-muted/30 rounded-lg">
+              <p className="text-2xl font-bold text-primary">
                 {user.followers?.toLocaleString()}
               </p>
-              <p className="text-sm text-muted-foreground">Followers</p>
+              <p className="text-sm text-muted-foreground font-medium">
+                Followers
+              </p>
             </div>
-            <div className="text-center">
-              <p className="text-2xl font-bold">{user.following}</p>
-              <p className="text-sm text-muted-foreground">Following</p>
+            <div className="text-center p-4 bg-muted/30 rounded-lg">
+              <p className="text-2xl font-bold text-primary">
+                {user.following}
+              </p>
+              <p className="text-sm text-muted-foreground font-medium">
+                Following
+              </p>
             </div>
           </div>
 
           <Separator className="my-8" />
 
           <div className="mb-8">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">My Vehicles</h3>
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+              <div>
+                <h3 className="text-xl font-bold">My Vehicles</h3>
+                <p className="text-sm text-muted-foreground">
+                  Manage your vehicle collection
+                </p>
+              </div>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setIsAddVehicleOpen(true)}
+                className="w-full sm:w-auto"
               >
                 <PlusCircle className="mr-2 h-4 w-4" />
                 Add Vehicle
@@ -180,32 +198,43 @@ export default function ProfilePage() {
                 isLoading={isLoadingVehicles}
               />
             ) : (
-              <div className="text-center border-dashed border-2 border-muted-foreground/30 p-8 rounded-xl bg-muted/10 shadow-sm">
-                <Car className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <h4 className="text-lg font-semibold mb-2">
-                  No vehicles added yet
-                </h4>
-                <p className="text-muted-foreground mb-4">
-                  Start by adding your first vehicle to track modifications and
-                  builds.
-                </p>
-                <Button onClick={() => setIsAddVehicleOpen(true)}>
-                  <PlusCircle className="mr-2 h-4 w-4" />
-                  Add Your First Vehicle
-                </Button>
-              </div>
+              <Card className="border-dashed border-2 border-muted-foreground/30 bg-muted/10">
+                <CardContent className="text-center p-8">
+                  <Car className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                  <h4 className="text-lg font-semibold mb-2">
+                    No vehicles added yet
+                  </h4>
+                  <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                    Start by adding your first vehicle to track modifications
+                    and builds.
+                  </p>
+                  <Button
+                    onClick={() => setIsAddVehicleOpen(true)}
+                    className="w-full sm:w-auto"
+                  >
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Add Your First Vehicle
+                  </Button>
+                </CardContent>
+              </Card>
             )}
           </div>
 
           <Separator className="my-8" />
 
           <div className="mb-8">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">My Builds</h3>
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+              <div>
+                <h3 className="text-xl font-bold">My Builds</h3>
+                <p className="text-sm text-muted-foreground">
+                  Your custom vehicle builds and modifications
+                </p>
+              </div>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => router.push("/customize")}
+                className="w-full sm:w-auto"
               >
                 <Wrench className="mr-2 h-4 w-4" />
                 Create Build
@@ -217,25 +246,31 @@ export default function ProfilePage() {
                 <Skeleton className="h-24 w-full" />
               </div>
             ) : builds.length > 0 ? (
-              <div className="space-y-4">
+              <div className="grid grid-cols-1 gap-4">
                 {builds.map((build) => (
                   <Card
                     key={build._id}
-                    className="p-4 flex items-center gap-4 hover:shadow-lg transition-shadow duration-200"
+                    className="p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4 hover:shadow-lg transition-all duration-200 border-l-4 border-l-primary/20"
                   >
                     <div
                       style={{ backgroundColor: build.color }}
-                      className="w-16 h-16 rounded-lg flex items-center justify-center shadow-md"
+                      className="w-16 h-16 rounded-xl flex items-center justify-center shadow-md flex-shrink-0"
                     >
                       <Paintbrush className="w-8 h-8 text-white" />
                     </div>
-                    <div className="flex-1">
-                      <p className="font-bold">{build.carModel}</p>
-                      <p className="text-sm text-muted-foreground capitalize">
-                        {build.selectedParts?.join(", ") || "No extra parts"}
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-bold text-lg mb-1">
+                        {build.carModel}
+                      </h4>
+                      <p className="text-sm text-muted-foreground capitalize mb-2">
+                        {build.selectedParts?.length > 0
+                          ? `${
+                              build.selectedParts.length
+                            } modifications: ${build.selectedParts.join(", ")}`
+                          : "Base configuration"}
                       </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Saved on{" "}
+                      <p className="text-xs text-muted-foreground">
+                        Created on{" "}
                         {new Date(build.createdAt).toLocaleDateString()}
                       </p>
                     </div>
@@ -243,27 +278,33 @@ export default function ProfilePage() {
                       variant="outline"
                       size="sm"
                       onClick={() => router.push(`/customize/${build._id}`)}
+                      className="w-full sm:w-auto flex-shrink-0"
                     >
-                      View
+                      Edit Build
                     </Button>
                   </Card>
                 ))}
               </div>
             ) : (
-              <div className="text-center border-dashed border-2 border-muted-foreground/30 p-8 rounded-xl bg-muted/10 shadow-sm">
-                <Wrench className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <h4 className="text-lg font-semibold mb-2">
-                  No builds created yet
-                </h4>
-                <p className="text-muted-foreground mb-4">
-                  Create your first custom build to showcase your modifications
-                  and designs.
-                </p>
-                <Button onClick={() => router.push("/customize")}>
-                  <Wrench className="mr-2 h-4 w-4" />
-                  Start Your First Build
-                </Button>
-              </div>
+              <Card className="border-dashed border-2 border-muted-foreground/30 bg-muted/10">
+                <CardContent className="text-center p-8">
+                  <Wrench className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                  <h4 className="text-lg font-semibold mb-2">
+                    No builds created yet
+                  </h4>
+                  <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                    Create your first custom build to showcase your
+                    modifications and designs.
+                  </p>
+                  <Button
+                    onClick={() => router.push("/customize")}
+                    className="w-full sm:w-auto"
+                  >
+                    <Wrench className="mr-2 h-4 w-4" />
+                    Start Your First Build
+                  </Button>
+                </CardContent>
+              </Card>
             )}
           </div>
         </CardContent>

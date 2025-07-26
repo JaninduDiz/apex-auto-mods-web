@@ -84,7 +84,10 @@ export function VehicleList({ vehicles, isLoading }: VehicleListProps) {
               </h4>
               <div className="flex flex-wrap gap-x-6 gap-y-2 mt-2 text-sm text-muted-foreground">
                 <div className="flex items-center gap-2">
-                  <Palette className="w-4 h-4" />
+                  <Palette
+                    className="w-4 h-4"
+                    style={{ color: vehicle.color }}
+                  />
                   <span>{vehicle.color}</span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -93,7 +96,7 @@ export function VehicleList({ vehicles, isLoading }: VehicleListProps) {
                 </div>
                 <div className="flex items-center gap-2">
                   <Gauge className="w-4 h-4" />
-                  <span>{vehicle.odoRead}</span>
+                  <span>{vehicle.odoRead}km</span>
                 </div>
               </div>
             </div>

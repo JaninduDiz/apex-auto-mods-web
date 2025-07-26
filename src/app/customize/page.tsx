@@ -110,27 +110,27 @@ export default function CustomizePage() {
         isLoading={isLoadingVehicles}
       />
       <div className="container mx-auto py-12 px-4 md:px-6">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
           <div>
             <h1 className="text-3xl font-bold">Your Builds</h1>
             <p className="text-muted-foreground">
               Manage your saved customizations or start a new project.
             </p>
           </div>
-          <Button onClick={handleCreateNew}>
+          <Button onClick={handleCreateNew} className="w-full sm:w-auto">
             <PlusCircle className="mr-2" />
             Create New Build
           </Button>
         </div>
 
         {isPageLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <Skeleton className="h-48 w-full" />
             <Skeleton className="h-48 w-full" />
             <Skeleton className="h-48 w-full" />
           </div>
         ) : isAuthenticated && builds.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {builds.map((build) => (
               <Card key={build._id} className="flex flex-col">
                 <CardHeader>

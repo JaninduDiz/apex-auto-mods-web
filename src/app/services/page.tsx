@@ -283,17 +283,17 @@ function ServicesComponent() {
             <div className="space-y-6 max-w-4xl mx-auto">
               {ongoingService.isSerivceInProgress && (
                 <Card className="rounded-3xl shadow-lg bg-blue-50 border-blue-200">
-                  <CardContent className="p-4 md:p-6 flex flex-col md:flex-row items-center gap-4 md:gap-6">
+                  <CardContent className="p-4 md:p-6 flex flex-col sm:flex-row items-center gap-4 md:gap-6">
                     <Image
                       src={ongoingService.image}
                       width={150}
                       height={100}
                       alt={ongoingService.carModel}
-                      className="rounded-2xl object-cover w-full md:w-[150px]"
+                      className="rounded-2xl object-cover w-full sm:w-[120px] md:w-[150px]"
                     />
                     <div className="flex-1 w-full">
-                      <div className="flex justify-between items-center mb-2">
-                        <h3 className="font-bold text-lg">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-2">
+                        <h3 className="font-bold text-lg mb-1 sm:mb-0">
                           {ongoingService.carModel}
                         </h3>
                         <span className="text-sm text-muted-foreground font-medium">
@@ -311,7 +311,7 @@ function ServicesComponent() {
                     </div>
                     <Button
                       variant="outline"
-                      className="rounded-full self-stretch md:self-start w-full md:w-auto"
+                      className="rounded-full w-full sm:w-auto sm:self-start mt-4 sm:mt-0"
                       onClick={() =>
                         handleViewDetailsClick(
                           getActiveServiceById(ongoingService.id)!
@@ -326,21 +326,23 @@ function ServicesComponent() {
               {activeServices.map((service) => (
                 <Card
                   key={service.id}
-                  className="p-4 md:p-6 flex items-center gap-4 md:gap-6 cursor-pointer hover:bg-muted/50 transition-colors"
+                  className="p-4 md:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4 cursor-pointer hover:bg-muted/50 transition-colors"
                   onClick={() => handleViewDetailsClick(service)}
                 >
-                  <div className="bg-secondary p-4 rounded-full">
+                  <div className="bg-secondary p-4 rounded-full self-center sm:self-auto">
                     {service.status === "Completed" ? (
                       <ShieldCheck className="w-8 h-8 text-green-500" />
                     ) : (
                       <Clock className="w-8 h-8 text-primary" />
                     )}
                   </div>
-                  <div className="flex-1">
-                    <div className="flex flex-col md:flex-row justify-between md:items-center">
-                      <p className="font-bold text-lg">{service.carModel}</p>
+                  <div className="flex-1 w-full">
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+                      <p className="font-bold text-lg text-center sm:text-left">
+                        {service.carModel}
+                      </p>
                       <span
-                        className={`mt-2 md:mt-0 px-3 py-1 text-sm rounded-full font-medium self-start ${
+                        className={`px-3 py-1 text-sm rounded-full font-medium self-center sm:self-auto ${
                           service.status === "Completed"
                             ? "bg-green-100 text-green-800"
                             : "bg-blue-100 text-blue-800"

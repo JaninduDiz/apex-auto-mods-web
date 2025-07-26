@@ -1,29 +1,29 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import React, { useState } from "react"
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { useToast } from "@/hooks/use-toast"
-import { Loader2 } from "lucide-react"
-import { api } from "@/lib/api"
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
+import { Loader2 } from "lucide-react";
+import { api } from "@/lib/api";
 
 export default function RegisterForm() {
-  const router = useRouter()
-  const { toast } = useToast()
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const router = useRouter();
+  const { toast } = useToast();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -31,28 +31,30 @@ export default function RegisterForm() {
     setIsLoading(true);
 
     try {
-      await api.post('/auth/register', {
+      await api.post("/auth/register", {
         name,
         email,
         password,
-      })
-      
+      });
+
       toast({
         title: "Registration Successful",
         description: "You can now log in with your new account.",
-      })
+      });
       router.push("/login");
-
     } catch (error: any) {
-       toast({
+      toast({
         variant: "destructive",
         title: "Registration Failed",
-        description: error.response?.data?.message || "An unexpected error occurred.",
-      })
+        description:
+          error.response?.data?.message ||
+          error.message ||
+          "An unexpected error occurred.",
+      });
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="flex items-center justify-center py-12 px-4">
@@ -67,16 +69,16 @@ export default function RegisterForm() {
           <form onSubmit={handleSubmit} className="grid gap-4">
             <div className="grid gap-2">
               <Label htmlFor="name">Name</Label>
-              <Input 
-                id="name" 
-                placeholder="Max Robinson" 
-                required 
+              <Input
+                id="name"
+                placeholder="Max Robinson"
+                required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 disabled={isLoading}
               />
             </div>
-            
+
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -91,9 +93,9 @@ export default function RegisterForm() {
             </div>
             <div className="grid gap-2">
               <Label htmlFor="password">Password</Label>
-              <Input 
-                id="password" 
-                type="password" 
+              <Input
+                id="password"
+                type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -114,5 +116,5 @@ export default function RegisterForm() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

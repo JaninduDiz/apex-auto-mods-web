@@ -23,24 +23,43 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useUserStore } from "@/store/user-store";
 import { SelectVehicleDialog } from "@/components/customize/SelectVehicleDialog";
+import { LoginPromptDialog } from "@/components/layout/LoginPromptDialog";
 
 
 export default function CustomizePage() {
     const router = useRouter();
     const { builds, isLoading, fetchBuilds, deleteBuild, userVehicles, fetchUserVehicles, isLoadingVehicles } = useDataStore();
-    const { isAuthenticated } = useUserStore();
+    const { isAuthenticated, checkAuth } = useUserStore();
     const { toast } = useToast();
     const [isDeleting, setIsDeleting] = useState<string | null>(null);
     const [isSelectVehicleOpen, setIsSelectVehicleOpen] = useState(false);
+    const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+    const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+
+    useEffect(() => {
+        const verifyAuth = async () => {
+            await checkAuth();
+            setIsCheckingAuth(false);
+        };
+        verifyAuth();
+    }, [checkAuth]);
     
     useEffect(() => {
-        if (isAuthenticated) {
-            fetchBuilds();
-            fetchUserVehicles();
+        if (!isCheckingAuth) {
+            if (isAuthenticated) {
+                fetchBuilds();
+                fetchUserVehicles();
+            } else {
+                setShowLoginPrompt(true);
+            }
         }
-    }, [fetchBuilds, fetchUserVehicles, isAuthenticated]);
+    }, [fetchBuilds, fetchUserVehicles, isAuthenticated, isCheckingAuth]);
 
     const handleCreateNew = () => {
+        if (!isAuthenticated) {
+            setShowLoginPrompt(true);
+            return;
+        }
         setIsSelectVehicleOpen(true);
     }
 
@@ -62,9 +81,15 @@ export default function CustomizePage() {
             setIsDeleting(null);
         }
     }
+    
+    const isPageLoading = isLoading || isCheckingAuth;
 
     return (
         <>
+            <LoginPromptDialog 
+                isOpen={showLoginPrompt}
+                onClose={() => setShowLoginPrompt(false)}
+            />
             <SelectVehicleDialog 
                 isOpen={isSelectVehicleOpen}
                 setIsOpen={setIsSelectVehicleOpen}
@@ -85,13 +110,13 @@ export default function CustomizePage() {
                     </Button>
                 </div>
 
-                {isLoading ? (
+                {isPageLoading ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <Skeleton className="h-48 w-full" />
                         <Skeleton className="h-48 w-full" />
                         <Skeleton className="h-48 w-full" />
                     </div>
-                ) : builds.length > 0 ? (
+                ) : isAuthenticated && builds.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {builds.map((build) => (
                             <Card key={build._id} className="flex flex-col">
@@ -147,11 +172,11 @@ export default function CustomizePage() {
                     </div>
                 ) : (
                     <div className="text-center py-16 border-dashed border-2 rounded-lg">
-                        <h2 className="text-xl font-semibold">No Builds Yet</h2>
-                        <p className="text-muted-foreground mt-2">Start by creating a new build.</p>
+                        <h2 className="text-xl font-semibold">{isAuthenticated ? "No Builds Yet" : "Please Log In"}</h2>
+                        <p className="text-muted-foreground mt-2">{isAuthenticated ? "Start by creating a new build." : "Log in to see your saved builds and create new ones."}</p>
                         <Button className="mt-4" onClick={handleCreateNew}>
                             <PlusCircle className="mr-2" />
-                            Create New Build
+                            {isAuthenticated ? "Create New Build" : "Go to Login"}
                         </Button>
                     </div>
                 )}

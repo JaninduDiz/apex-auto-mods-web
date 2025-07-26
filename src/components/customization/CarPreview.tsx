@@ -2,7 +2,11 @@ import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { type CustomizationState } from "@/app/customize/[id]/page";
 
-export function CarPreview({ customization }: { customization: CustomizationState }) {
+export function CarPreview({
+  customization,
+}: {
+  customization: CustomizationState;
+}) {
   return (
     <Card className="overflow-hidden shadow-lg">
       <CardContent className="p-0">
@@ -17,8 +21,8 @@ export function CarPreview({ customization }: { customization: CustomizationStat
             className="object-contain drop-shadow-2xl"
             priority
           />
-          
-          {customization.parts.includes("wheels") && (
+
+          {customization.selectedParts.includes("wheels") && (
             <>
               <Image
                 src="https://placehold.co/120x120/transparent.png"
@@ -37,7 +41,7 @@ export function CarPreview({ customization }: { customization: CustomizationStat
             </>
           )}
 
-          {customization.parts.includes("spoiler") && (
+          {customization.selectedParts.includes("spoiler") && (
             <Image
               src="https://placehold.co/200x80/transparent.png"
               alt="Carbon Fiber Spoiler"
@@ -47,7 +51,7 @@ export function CarPreview({ customization }: { customization: CustomizationStat
             />
           )}
 
-          {customization.parts.includes("bodykit") && (
+          {customization.selectedParts.includes("bodykit") && (
             <Image
               src="https://placehold.co/600x60/transparent.png"
               alt="Body Kit"
@@ -56,9 +60,9 @@ export function CarPreview({ customization }: { customization: CustomizationStat
               className="absolute bottom-[13%] left-1/2 -translate-x-1/2 w-[60%] h-auto animate-in fade-in-0 slide-in-from-bottom-5 duration-500"
             />
           )}
-          
-          {customization.parts.includes("exhaust") && (
-             <Image
+
+          {customization.selectedParts.includes("exhaust") && (
+            <Image
               src="https://placehold.co/50x30/transparent.png"
               alt="Sport Exhaust"
               width={50}

@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
@@ -10,11 +9,9 @@ import { ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useDataStore } from "@/store/data-store";
 
-export type Part = "wheels" | "spoiler" | "bodykit" | "exhaust";
-
 export interface CustomizationState {
   color: string;
-  parts: Part[];
+  selectedParts: string[];
 }
 
 function CustomizationWorkspace() {
@@ -23,14 +20,15 @@ function CustomizationWorkspace() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const buildId = params.id as string;
-  
-  const { getBuildById, saveBuild, isLoadingBuilds, fetchBuilds } = useDataStore();
+
+  const { getBuildById, saveBuild, isLoadingBuilds, fetchBuilds } =
+    useDataStore();
 
   const [customization, setCustomization] = useState<CustomizationState>({
     color: "#3F51B5",
-    parts: [],
+    selectedParts: [],
   });
-  
+
   const [carModel, setCarModel] = useState("Default Model");
   const [isPageLoading, setIsPageLoading] = useState(true);
 
@@ -39,40 +37,40 @@ function CustomizationWorkspace() {
   }, [fetchBuilds]);
 
   useEffect(() => {
-    if (buildId === 'new') {
-        const modelFromQuery = searchParams.get('carModel');
-        if (modelFromQuery) {
-            setCarModel(decodeURIComponent(modelFromQuery));
-        } else {
-             toast({
-                variant: "destructive",
-                title: "No Vehicle Selected",
-                description: "Redirecting to the build selection page.",
-            });
-            router.push('/customize');
-        }
+    if (buildId === "new") {
+      const modelFromQuery = searchParams.get("carModel");
+      if (modelFromQuery) {
+        setCarModel(decodeURIComponent(modelFromQuery));
+      } else {
+        toast({
+          variant: "destructive",
+          title: "No Vehicle Selected",
+          description: "Redirecting to the build selection page.",
+        });
+        router.push("/customize");
+      }
     }
   }, [buildId, searchParams, router, toast]);
 
   useEffect(() => {
-    if (buildId && buildId !== 'new' && !isLoadingBuilds) {
-        const build = getBuildById(buildId);
-        if (build) {
-            setCustomization({
-                color: build.color,
-                parts: build.parts,
-            });
-            setCarModel(build.carModel);
-        } else {
-            toast({
-                variant: "destructive",
-                title: "Build not found",
-                description: "Redirecting to create a new build.",
-            });
-            router.push('/customize');
-        }
+    if (buildId && buildId !== "new" && !isLoadingBuilds) {
+      const build = getBuildById(buildId);
+      if (build) {
+        setCustomization({
+          color: build.color,
+          selectedParts: build.selectedParts || [],
+        });
+        setCarModel(build.carModel);
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Build not found",
+          description: "Redirecting to create a new build.",
+        });
+        router.push("/customize");
+      }
     }
-    if(!isLoadingBuilds) {
+    if (!isLoadingBuilds) {
       setIsPageLoading(false);
     }
   }, [buildId, router, toast, getBuildById, isLoadingBuilds]);
@@ -82,43 +80,49 @@ function CustomizationWorkspace() {
   const handleSaveBuild = async () => {
     setIsSavingBuild(true);
     try {
-      await saveBuild({
-        carModel,
-        ...customization,
-      }, buildId);
+      await saveBuild(
+        {
+          carModel,
+          ...customization,
+        },
+        buildId
+      );
 
       toast({
         title: "Build Saved!",
         description: "Your custom configuration has been saved.",
       });
-      
-      router.push('/customize');
 
+      router.push("/customize");
     } catch (error: any) {
-       toast({
+      toast({
         variant: "destructive",
         title: "Save Failed",
-        description: error.response?.data?.message || "Could not save your build.",
-      })
+        description:
+          error.response?.data?.message || "Could not save your build.",
+      });
     } finally {
       setIsSavingBuild(false);
     }
   };
-  
+
   if (isPageLoading || isLoadingBuilds) {
     return (
-        <div className="flex items-center justify-center h-screen">
-            <Loader2 className="w-8 h-8 animate-spin text-primary" />
-        </div>
-    )
+      <div className="flex items-center justify-center h-screen">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
   }
 
   return (
     <div className="container mx-auto py-8">
       <div className="mb-6">
-        <Link href="/customize" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground">
-            <ArrowLeft className="h-4 w-4" />
-            Back to Builds
+        <Link
+          href="/customize"
+          className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Builds
         </Link>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
@@ -140,13 +144,15 @@ function CustomizationWorkspace() {
 }
 
 export default function CustomizationWorkspacePage() {
-    return (
-        <Suspense fallback={
-            <div className="flex items-center justify-center h-screen">
-                <Loader2 className="w-8 h-8 animate-spin text-primary" />
-            </div>
-        }>
-            <CustomizationWorkspace />
-        </Suspense>
-    )
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center h-screen">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      }
+    >
+      <CustomizationWorkspace />
+    </Suspense>
+  );
 }

@@ -53,7 +53,7 @@ export const hotCollections: HotCollection[] = [
     model: "Evoque",
     logo: "https://www.nicepng.com/png/detail/130-1300392_land-rover-logo-hd-png-land-rover.png",
     image:
-      "https://www.nicepng.com/png/detail/926-9269336_range-rover-evoque-png.png",
+      "https://imgd.aeplcdn.com/1920x1080/n/cw/ec/37721/range-rover-evoque-exterior-right-front-three-quarter-3.jpeg?isig=0&q=80&q=80",
     price: "$38,700",
     details: [
       { type: "CC", value: "1997 CC", label: "Engine" },
@@ -89,7 +89,7 @@ export const regularCollections: RegularCollection[] = [
     condition: "Great",
     price: "$30,450",
     image:
-      "https://www.nicepng.com/png/detail/402-4028073_crv-png-honda-crv-2016-full-option.png",
+      "https://cdcssl.ibsrv.net/autodata/images/?img=USD00HOS021D021001.jpg&width=536",
     year: 2021,
     details: {
       engine: "1.5L Turbo",
@@ -98,9 +98,9 @@ export const regularCollections: RegularCollection[] = [
     },
     features: ["Sunroof", "Leather Seats", "Apple CarPlay", "Lane Assist"],
     gallery: [
-      "https://www.nicepng.com/png/detail/402-4028073_crv-png-honda-crv-2016-full-option.png",
-      "https://www.nicepng.com/png/detail/402-4028073_crv-png-honda-crv-2016-full-option.png",
-      "https://www.nicepng.com/png/detail/402-4028073_crv-png-honda-crv-2016-full-option.png",
+      "https://cdcssl.ibsrv.net/autodata/images/?img=USD00HOS021D021002.jpg&width=536",
+      "https://cdcssl.ibsrv.net/autodata/images/?img=USD00HOS021B021024.jpg&width=536",
+      "https://cdcssl.ibsrv.net/autodata/images/?img=USD10HOS021E021044.jpg&width=536",
     ],
   },
   {
@@ -110,7 +110,7 @@ export const regularCollections: RegularCollection[] = [
     condition: "Need Servicing",
     price: "$54,900",
     image:
-      "https://www.nicepng.com/png/detail/692-6929588_new-2019-audi-a6-prestige.png",
+      "https://dbhdyzvm8lm25.cloudfront.net/stills_0640_png/MY2021/14787/14787_st0640_116.png",
     year: 2021,
     details: {
       engine: "2.0L TFSI",
@@ -123,9 +123,9 @@ export const regularCollections: RegularCollection[] = [
       "Bang & Olufsen Sound",
     ],
     gallery: [
-      "https://www.nicepng.com/png/detail/692-6929588_new-2019-audi-a6-prestige.png",
-      "https://www.nicepng.com/png/detail/692-6929588_new-2019-audi-a6-prestige.png",
-      "https://www.nicepng.com/png/detail/692-6929588_new-2019-audi-a6-prestige.png",
+      "https://dbhdyzvm8lm25.cloudfront.net/stills_0640_png/MY2021/14787/14787_st0640_118.png",
+      "https://dbhdyzvm8lm25.cloudfront.net/stills_0640_png/MY2021/14787/14787_st0640_050.png",
+      "https://dbhdyzvm8lm25.cloudfront.net/stills_0640_png/MY2021/14787/14787_st0640_119.png",
     ],
   },
   {
@@ -134,7 +134,8 @@ export const regularCollections: RegularCollection[] = [
     totalRun: "35,000 Km",
     condition: "Great",
     price: "$35,695",
-    image: "https://www.nicepng.com/png/detail/416-4160259_audi-q3.png",
+    image:
+      "https://d2ivfcfbdvj3sm.cloudfront.net/_lvfARhmhAtJ7riD/51070/stills_0640_png/MY2023/51070/51070_st0640_116.png?c=172&p=164&s=4DIvdDzvlq5yNCUegtuT1q",
     year: 2019,
     details: {
       engine: "2.0L TFSI",
@@ -147,9 +148,9 @@ export const regularCollections: RegularCollection[] = [
       "LED Headlights",
     ],
     gallery: [
-      "https://www.nicepng.com/png/detail/416-4160259_audi-q3.png",
-      "https://www.nicepng.com/png/detail/416-4160259_audi-q3.png",
-      "https://www.nicepng.com/png/detail/416-4160259_audi-q3.png",
+      "https://d2ivfcfbdvj3sm.cloudfront.net/_lvfARhmhAtJ7riD/51070/stills_0640_png/MY2023/51070/51070_st0640_037.png?c=172&p=164&s=4DIvdDzvlq5yNCUegtuT1q",
+      "https://d2ivfcfbdvj3sm.cloudfront.net/_lvfARhmhAtJ7riD/51070/stills_0640_png/MY2023/51070/51070_st0640_051.png?c=172&p=164&s=4DIvdDzvlq5yNCUegtuT1q",
+      "https://d2ivfcfbdvj3sm.cloudfront.net/_lvfARhmhAtJ7riD/51070/stills_0640_png/MY2023/51070/51070_st0640_052.png?c=172&p=164&s=4DIvdDzvlq5yNCUegtuT1q",
     ],
   },
   {
@@ -159,7 +160,7 @@ export const regularCollections: RegularCollection[] = [
     condition: "Excellent",
     price: "$52,000",
     image:
-      "https://www.nicepng.com/png/detail/825-8251432_mercedes-benz-c-class.png",
+      "https://d2ivfcfbdvj3sm.cloudfront.net/7fc965ab77efe6e0fa62e4ca1ea7673bb2594054021e3d8e88cb/stills_0640_png/MY2019/13159/13159_st0640_116.png",
     year: 2019,
     details: {
       engine: "2.0L I4 Turbo",
@@ -172,9 +173,9 @@ export const regularCollections: RegularCollection[] = [
       "Burmester Surround Sound",
     ],
     gallery: [
-      "https://www.nicepng.com/png/detail/825-8251432_mercedes-benz-c-class.png",
-      "https://www.nicepng.com/png/detail/825-8251432_mercedes-benz-c-class.png",
-      "https://www.nicepng.com/png/detail/825-8251432_mercedes-benz-c-class.png",
+      "https://d2ivfcfbdvj3sm.cloudfront.net/7fc965ab77efe6e0fa62e4ca1ea7673bb2594054021e3d8e88cb/stills_0640_png/MY2019/13159/13159_st0640_037.png",
+      "https://d2ivfcfbdvj3sm.cloudfront.net/7fc965ab77efe6e0fa62e4ca1ea7673bb2594054021e3d8e88cb/stills_0640_png/MY2019/13159/13159_st0640_059.png",
+      "https://d2ivfcfbdvj3sm.cloudfront.net/7fc965ab77efe6e0fa62e4ca1ea7673bb2594054021e3d8e88cb/stills_0640_png/MY2019/13159/13159_st0640_050.png",
     ],
   },
 ];
@@ -224,7 +225,7 @@ export const ongoingService = {
   service: "ECU Tunning",
   progress: 65,
   image:
-    "https://www.nicepng.com/png/detail/926-9269336_range-rover-evoque-png.png",
+    "https://www.buyatoyota.com/sharpr/bat/assets/img/vehicle-info/Supra/2024/hero-image.png",
 };
 
 // --- PROFILE & CUSTOMIZE MOCK DATA ---

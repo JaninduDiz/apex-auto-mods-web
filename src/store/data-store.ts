@@ -1,13 +1,10 @@
-
 import { create } from 'zustand';
 import {
     hotCollections as mockHotCollections,
     regularCollections as mockRegularCollections,
     ongoingService as mockOngoingService,
-    mockBuilds,
     staticServices,
     activeServices as mockActiveServices,
-    mockUserVehicles,
     type HotCollection,
     type RegularCollection,
     type Build,
@@ -15,8 +12,11 @@ import {
     type ActiveService,
     type UserVehicle,
 } from '@/lib/constants';
+import { api } from '@/lib/api';
 
-type NewVehicle = Omit<UserVehicle, 'id'>;
+type NewVehicle = Omit<UserVehicle, 'id' | 'userId'>;
+type NewBuild = Omit<Build, '_id' | 'createdAt' | 'userId'>;
+
 
 interface DataState {
     hotCollections: HotCollection[];
@@ -27,6 +27,7 @@ interface DataState {
     activeServices: ActiveService[];
     userVehicles: UserVehicle[];
     isLoading: boolean;
+    isLoadingBuilds: boolean;
     isLoadingVehicles: boolean;
     fetchDashboardData: () => Promise<void>;
     fetchBuilds: () => Promise<void>;
@@ -34,7 +35,7 @@ interface DataState {
     fetchUserVehicles: () => Promise<void>;
     getBuildById: (id: string) => Build | undefined;
     getActiveServiceById: (id: string) => ActiveService | undefined;
-    saveBuild: (build: Omit<Build, 'createdAt'> & { createdAt?: string }) => Promise<void>;
+    saveBuild: (build: NewBuild, buildId?: string) => Promise<void>;
     addVehicle: (vehicle: NewVehicle) => Promise<void>;
 }
 
@@ -47,11 +48,12 @@ const useDataStore = create<DataState>((set, get) => ({
     activeServices: [],
     userVehicles: [],
     isLoading: true,
+    isLoadingBuilds: true,
     isLoadingVehicles: true,
 
     fetchDashboardData: async () => {
         set({ isLoading: true });
-        // Simulate API call
+        // This data remains mocked as per requirements
         await new Promise(resolve => setTimeout(resolve, 500));
         set({
             hotCollections: mockHotCollections,
@@ -61,13 +63,19 @@ const useDataStore = create<DataState>((set, get) => ({
     },
     
     fetchBuilds: async () => {
-        set({ isLoading: true });
-        await new Promise(resolve => setTimeout(resolve, 500));
-        set({ builds: mockBuilds, isLoading: false });
+        set({ isLoadingBuilds: true });
+        try {
+            const response = await api.get('/builds/user');
+            set({ builds: response.data, isLoadingBuilds: false });
+        } catch (error) {
+            console.error("Failed to fetch builds:", error);
+            set({ isLoadingBuilds: false });
+        }
     },
 
     fetchServices: async () => {
         set({ isLoading: true });
+        // This data remains mocked as per requirements
         await new Promise(resolve => setTimeout(resolve, 500));
         set({ 
             services: staticServices, 
@@ -79,20 +87,27 @@ const useDataStore = create<DataState>((set, get) => ({
 
     fetchUserVehicles: async () => {
         set({ isLoadingVehicles: true });
-        await new Promise(resolve => setTimeout(resolve, 500));
-        set({ userVehicles: mockUserVehicles, isLoadingVehicles: false });
+        try {
+            const response = await api.get('/vehicles/user');
+            set({ userVehicles: response.data, isLoadingVehicles: false });
+        } catch (error) {
+            console.error("Failed to fetch user vehicles:", error);
+            set({ isLoadingVehicles: false });
+        }
     },
     
     addVehicle: async (vehicle) => {
-        set({ isLoadingVehicles: true });
-        await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API delay
-        const newVehicle = { ...vehicle, id: `v${Date.now()}` };
-        set(state => ({
-            userVehicles: [...state.userVehicles, newVehicle],
-            isLoadingVehicles: false
-        }));
+        try {
+            const response = await api.post('/vehicles', vehicle);
+            const newVehicle = response.data.vehicle;
+            set(state => ({
+                userVehicles: [...state.userVehicles, newVehicle],
+            }));
+        } catch (error) {
+            console.error("Failed to add vehicle", error);
+            throw error;
+        }
     },
-
 
     getBuildById: (id: string) => {
         return get().builds.find(build => build._id === id);
@@ -102,32 +117,24 @@ const useDataStore = create<DataState>((set, get) => ({
         return get().activeServices.find(service => service.id === id);
     },
     
-    saveBuild: async (buildToSave) => {
-        set({ isLoading: true });
-        await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API delay
-        
-        set(state => {
-            const existingBuildIndex = state.builds.findIndex(b => b._id === buildToSave._id);
-            let updatedBuilds = [...state.builds];
-            
-            const finalBuild: Build = {
-                ...buildToSave,
-                createdAt: buildToSave.createdAt || new Date().toISOString()
-            }
-
-            if (existingBuildIndex > -1) {
-                // Update existing build
-                updatedBuilds[existingBuildIndex] = finalBuild;
-            } else {
-                // Add new build
-                updatedBuilds.push(finalBuild);
-            }
-            // In a real app, you might re-fetch or just update the state
-            return { builds: updatedBuilds, isLoading: false };
-        });
+    saveBuild: async (buildToSave, buildId) => {
+        if (buildId && buildId !== 'new') {
+            // Update existing build
+            const response = await api.put(`/builds/${buildId}`, buildToSave);
+            const updatedBuild = response.data.build;
+            set(state => ({
+                builds: state.builds.map(b => b._id === buildId ? updatedBuild : b),
+            }));
+        } else {
+            // Create new build
+            const response = await api.post('/builds', buildToSave);
+            const newBuild = response.data.build;
+            set(state => ({
+                builds: [...state.builds, newBuild],
+            }));
+        }
     }
 
 }));
 
 export { useDataStore, type NewVehicle };
-

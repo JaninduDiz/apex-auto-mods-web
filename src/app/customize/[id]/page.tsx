@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -21,9 +20,9 @@ export default function CustomizationWorkspacePage() {
   const { toast } = useToast();
   const params = useParams();
   const router = useRouter();
-  const buildId = params.id;
+  const buildId = params.id as string;
   
-  const { getBuildById, saveBuild, isLoading: isStoreLoading } = useDataStore();
+  const { getBuildById, saveBuild, isLoadingBuilds, fetchBuilds } = useDataStore();
 
   const [customization, setCustomization] = useState<CustomizationState>({
     color: "#3F51B5",
@@ -34,17 +33,19 @@ export default function CustomizationWorkspacePage() {
   const [isPageLoading, setIsPageLoading] = useState(true);
 
   useEffect(() => {
-    // If it's not a new build, try to load it.
-    if (buildId && buildId !== 'new') {
-        const build = getBuildById(buildId as string);
+    fetchBuilds();
+  }, [fetchBuilds]);
+
+  useEffect(() => {
+    if (buildId && buildId !== 'new' && !isLoadingBuilds) {
+        const build = getBuildById(buildId);
         if (build) {
             setCustomization({
                 color: build.color,
                 parts: build.parts,
             });
             setCarModel(build.carModel);
-        } else if (!isStoreLoading) {
-            // Handle case where build is not found and the store has finished loading
+        } else {
             toast({
                 variant: "destructive",
                 title: "Build not found",
@@ -53,12 +54,10 @@ export default function CustomizationWorkspacePage() {
             router.push('/customize/new');
         }
     }
-    // For 'new' builds, we just use the default state.
-    // In a real app, you might let the user select a car first.
-    if(!isStoreLoading) {
+    if(!isLoadingBuilds) {
       setIsPageLoading(false);
     }
-  }, [buildId, router, toast, getBuildById, isStoreLoading]);
+  }, [buildId, router, toast, getBuildById, isLoadingBuilds]);
 
   const [isSavingBuild, setIsSavingBuild] = useState(false);
 
@@ -66,32 +65,29 @@ export default function CustomizationWorkspacePage() {
     setIsSavingBuild(true);
     try {
       await saveBuild({
-        _id: buildId === 'new' ? `build-${Date.now()}` : buildId as string,
         carModel,
         ...customization,
-        createdAt: new Date().toISOString()
-      });
+      }, buildId);
 
       toast({
         title: "Build Saved!",
-        description: "Your custom configuration has been saved to your profile.",
+        description: "Your custom configuration has been saved.",
       });
       
-      // After saving, redirect back to the customization gallery
       router.push('/customize');
 
     } catch (error: any) {
        toast({
         variant: "destructive",
         title: "Save Failed",
-        description: error.message || "Could not save your build.",
+        description: error.response?.data?.message || "Could not save your build.",
       })
     } finally {
       setIsSavingBuild(false);
     }
   };
   
-  if (isPageLoading) {
+  if (isPageLoading || isLoadingBuilds) {
     return (
         <div className="flex items-center justify-center h-screen">
             <Loader2 className="w-8 h-8 animate-spin text-primary" />

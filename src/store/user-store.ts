@@ -1,18 +1,15 @@
-
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { user as mockUser } from '@/lib/constants'; // Using mock data for now
+import { api } from '@/lib/api';
 
 interface User {
     _id: string;
     name: string;
     email: string;
-    phone: string;
-    location: string;
-    avatarUrl: string;
-    bio: string;
-    followers: number;
-    following: number;
+    avatarUrl?: string; // Optional avatar
+    bio?: string;
+    followers?: number;
+    following?: number;
 }
 
 interface UserState {
@@ -21,8 +18,7 @@ interface UserState {
     isAuthenticated: boolean;
     login: (email: string, pass: string) => Promise<void>;
     logout: () => void;
-    // In a real app, you might have a function to fetch user from token
-    // initialize: () => void; 
+    checkAuth: () => Promise<void>;
 }
 
 export const useUserStore = create<UserState>()(
@@ -32,30 +28,46 @@ export const useUserStore = create<UserState>()(
             token: null,
             isAuthenticated: false,
 
-            login: async (email: string, pass: string) => {
-                // In a real app, you'd make an API call here.
-                // const response = await fetch('/api/auth/login', { ... });
-                // const data = await response.json();
-                // if (!response.ok) throw new Error(data.message);
-
-                // --- MOCK IMPLEMENTATION ---
-                await new Promise(resolve => setTimeout(resolve, 500));
-                // For demonstration, we'll just use the mock user.
-                const token = 'mock-jwt-token';
-                const user = mockUser;
-                // --- END MOCK ---
+            login: async (email: string, password: string) => {
+                const response = await api.post('/auth/login', { email, password });
+                const { token } = response.data;
                 
-                set({ user, token, isAuthenticated: true });
+                set({ token });
+                
+                await get().checkAuth();
             },
 
             logout: () => {
                 set({ user: null, token: null, isAuthenticated: false });
             },
+
+            checkAuth: async () => {
+                const token = get().token;
+                if (!token) {
+                    return set({ user: null, isAuthenticated: false });
+                }
+
+                try {
+                    const response = await api.get('/auth/profile');
+                    const user = response.data;
+                    const enrichedUser = {
+                        ...user,
+                        avatarUrl: user.avatarUrl || "https://placehold.co/128x128.png",
+                        bio: user.bio || "Car enthusiast and professional modifier. Passionate about creating unique and high-performance vehicles.",
+                        followers: user.followers || 1250,
+                        following: user.following || 340,
+                    };
+
+                    set({ user: enrichedUser, isAuthenticated: true });
+                } catch (error) {
+                    console.error("Auth check failed", error);
+                    set({ user: null, token: null, isAuthenticated: false });
+                }
+            }
         }),
         {
-            name: 'user-storage', // name of the item in the storage (must be unique)
-            storage: createJSONStorage(() => localStorage), // (optional) by default, 'localStorage' is used
+            name: 'user-storage',
+            storage: createJSONStorage(() => localStorage),
         }
     )
 );
-

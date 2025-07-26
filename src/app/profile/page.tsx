@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -6,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { User, Mail, Phone, MapPin, Edit, Paintbrush, Loader2, LogOut, PlusCircle } from "lucide-react";
-import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
@@ -21,17 +19,21 @@ export default function ProfilePage() {
   const { toast } = useToast();
   const router = useRouter();
   
-  const { user, logout } = useUserStore();
-  const { builds, isLoading: isLoadingBuilds, fetchBuilds, userVehicles, fetchUserVehicles, addVehicle, isLoadingVehicles } = useDataStore();
+  const { user, logout, isAuthenticated, checkAuth } = useUserStore();
+  const { builds, isLoading: isLoadingBuilds, fetchBuilds, userVehicles, fetchUserVehicles, isLoadingVehicles } = useDataStore();
   
   const [isAddVehicleOpen, setIsAddVehicleOpen] = useState(false);
 
   useEffect(() => {
-    if (user?._id) {
+    checkAuth();
+  }, [checkAuth]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
         fetchBuilds();
         fetchUserVehicles();
     }
-  }, [fetchBuilds, fetchUserVehicles, user?._id]);
+  }, [fetchBuilds, fetchUserVehicles, isAuthenticated]);
 
   const handleLogout = () => {
     logout();
@@ -42,16 +44,24 @@ export default function ProfilePage() {
     });
   }
   
-  if (!user) {
-    useEffect(() => {
-      const timer = setTimeout(() => {
-        if (!user) {
-          router.push('/login');
-        }
-      }, 2000);
-      return () => clearTimeout(timer);
-    }, [user, router]);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
+  useEffect(() => {
+    const checkUser = async () => {
+      await checkAuth();
+      setIsCheckingAuth(false);
+    };
+    checkUser();
+  }, [checkAuth]);
+  
+  useEffect(() => {
+    if (!isCheckingAuth && !isAuthenticated) {
+        router.push('/login');
+    }
+  }, [isCheckingAuth, isAuthenticated, router]);
+
+
+  if (isCheckingAuth || !user) {
     return (
         <div className="flex items-center justify-center h-screen">
             <Loader2 className="w-8 h-8 animate-spin text-primary" />
@@ -66,17 +76,9 @@ export default function ProfilePage() {
       <AddVehicleForm 
         isOpen={isAddVehicleOpen}
         setIsOpen={setIsAddVehicleOpen}
-        addVehicle={addVehicle}
-        userId={user._id}
       />
       <Card className="w-full max-w-4xl mx-auto">
         <CardHeader className="relative h-36 md:h-48 bg-gray-200 rounded-t-lg">
-            <Image 
-                src="https://placehold.co/1024x300.png"
-                alt="Cover photo"
-                fill
-                className="object-cover rounded-t-lg"
-            />
             <div className="absolute bottom-0 left-4 md:left-6 translate-y-1/2">
                 <Avatar className="w-24 h-24 md:w-32 md:h-32 border-4 border-background">
                     <AvatarImage src={user.avatarUrl} alt={user.name} />
@@ -112,7 +114,7 @@ export default function ProfilePage() {
               <p className="text-sm text-muted-foreground">Vehicles</p>
             </div>
             <div className="text-center">
-              <p className="text-2xl font-bold">{user.followers.toLocaleString()}</p>
+              <p className="text-2xl font-bold">{user.followers?.toLocaleString()}</p>
               <p className="text-sm text-muted-foreground">Followers</p>
             </div>
             <div className="text-center">
@@ -173,4 +175,3 @@ export default function ProfilePage() {
     </div>
   );
 }
-

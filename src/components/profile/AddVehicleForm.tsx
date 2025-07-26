@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from 'react';
@@ -15,17 +14,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from 'lucide-react';
-import { type NewVehicle } from '@/store/data-store';
+import { useDataStore, type NewVehicle } from '@/store/data-store';
 
 interface AddVehicleFormProps {
     isOpen: boolean;
     setIsOpen: (isOpen: boolean) => void;
-    addVehicle: (vehicle: NewVehicle) => Promise<void>;
-    userId: string;
 }
 
-export function AddVehicleForm({ isOpen, setIsOpen, addVehicle, userId }: AddVehicleFormProps) {
+export function AddVehicleForm({ isOpen, setIsOpen }: AddVehicleFormProps) {
     const { toast } = useToast();
+    const { addVehicle } = useDataStore();
     const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
         make: '',
@@ -46,7 +44,6 @@ export function AddVehicleForm({ isOpen, setIsOpen, addVehicle, userId }: AddVeh
 
         try {
             const vehicleData: NewVehicle = {
-                userId,
                 make: formData.make,
                 carModel: formData.carModel,
                 color: formData.color,
@@ -71,7 +68,7 @@ export function AddVehicleForm({ isOpen, setIsOpen, addVehicle, userId }: AddVeh
             toast({
                 variant: "destructive",
                 title: "Failed to add vehicle",
-                description: error.message || "An unexpected error occurred.",
+                description: error.response?.data?.message || "An unexpected error occurred.",
             });
         } finally {
             setIsLoading(false);

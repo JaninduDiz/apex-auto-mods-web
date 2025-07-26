@@ -323,45 +323,54 @@ function ServicesComponent() {
                   </CardContent>
                 </Card>
               )}
-              {activeServices.map((service) => (
-                <Card
-                  key={service.id}
-                  className="p-4 md:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4 cursor-pointer hover:bg-muted/50 transition-colors"
-                  onClick={() => handleViewDetailsClick(service)}
-                >
-                  <div className="bg-secondary p-4 rounded-full self-center sm:self-auto">
-                    {service.status === "Completed" ? (
-                      <ShieldCheck className="w-8 h-8 text-green-500" />
-                    ) : (
-                      <Clock className="w-8 h-8 text-primary" />
-                    )}
-                  </div>
-                  <div className="flex-1 w-full">
-                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
-                      <p className="font-bold text-lg text-center sm:text-left">
-                        {service.carModel}
-                      </p>
-                      <span
-                        className={`px-3 py-1 text-sm rounded-full font-medium self-center sm:self-auto ${
-                          service.status === "Completed"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-blue-100 text-blue-800"
-                        }`}
-                      >
-                        {service.status}
-                      </span>
-                    </div>
-                    <p className="text-muted-foreground">{service.name}</p>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="hidden md:flex"
+              {activeServices
+                .sort((a, b) => {
+                  // Sort by status: "In Progress" first, then "Completed"
+                  if (a.status === "In Progress" && b.status === "Completed")
+                    return -1;
+                  if (a.status === "Completed" && b.status === "In Progress")
+                    return 1;
+                  return 0;
+                })
+                .map((service) => (
+                  <Card
+                    key={service.id}
+                    className="p-4 md:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4 cursor-pointer hover:bg-muted/50 transition-colors"
+                    onClick={() => handleViewDetailsClick(service)}
                   >
-                    <Info className="h-5 w-5" />
-                  </Button>
-                </Card>
-              ))}
+                    <div className="bg-secondary p-4 rounded-full self-center sm:self-auto">
+                      {service.status === "Completed" ? (
+                        <ShieldCheck className="w-8 h-8 text-green-500" />
+                      ) : (
+                        <Clock className="w-8 h-8 text-primary" />
+                      )}
+                    </div>
+                    <div className="flex-1 w-full">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+                        <p className="font-bold text-lg text-center sm:text-left">
+                          {service.carModel}
+                        </p>
+                        <span
+                          className={`px-3 py-1 text-sm rounded-full font-medium self-center sm:self-auto ${
+                            service.status === "Completed"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-blue-100 text-blue-800"
+                          }`}
+                        >
+                          {service.status}
+                        </span>
+                      </div>
+                      <p className="text-muted-foreground">{service.name}</p>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="hidden md:flex"
+                    >
+                      <Info className="h-5 w-5" />
+                    </Button>
+                  </Card>
+                ))}
             </div>
           )}
         </TabsContent>

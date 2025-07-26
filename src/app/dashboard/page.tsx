@@ -49,7 +49,9 @@ export default function DashboardPage() {
       <header className="flex justify-between items-center mb-10">
         <div>
           <h1 className="text-2xl font-bold">Good morning{user ? `, ${user.name.split(' ')[0]}` : ''}!</h1>
-          <p className="text-muted-foreground">Welcome back to your garage.</p>
+          <p className="text-muted-foreground">
+            {user ? "Welcome back to your garage." : "Your premier destination for car modifications."}
+          </p>
         </div>
         <div className="relative w-1/3 hidden md:block">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />

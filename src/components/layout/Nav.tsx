@@ -21,11 +21,18 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { useUserStore } from "@/store/user-store";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { useEffect, useState } from "react";
 
 
 export function Nav() {
     const pathname = usePathname();
     const { isAuthenticated, user } = useUserStore();
+    const [isClient, setIsClient] = useState(false);
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
+
 
     const navLinks = [
         { href: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -75,7 +82,7 @@ export function Nav() {
                             })}
                         </div>
                     </div>
-                    {isAuthenticated && user && (
+                    {isClient && isAuthenticated && user && (
                     <div className="flex flex-col items-center gap-4">
                         <Tooltip>
                             <TooltipTrigger asChild>

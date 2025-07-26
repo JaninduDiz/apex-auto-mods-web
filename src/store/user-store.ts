@@ -32,8 +32,10 @@ export const useUserStore = create<UserState>()(
                 const response = await api.post('/auth/login', { email, password });
                 const { token } = response.data;
                 
+                // Set the token first
                 set({ token });
                 
+                // Wait for the profile to be fetched before considering login complete
                 await get().checkAuth();
             },
 
@@ -48,8 +50,12 @@ export const useUserStore = create<UserState>()(
                 }
 
                 try {
+                    // Set the Authorization header for this specific request
+                    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+                    
                     const response = await api.get('/auth/profile');
                     const user = response.data;
+
                     const enrichedUser = {
                         ...user,
                         avatarUrl: user.avatarUrl || "https://placehold.co/128x128.png",
@@ -62,12 +68,24 @@ export const useUserStore = create<UserState>()(
                 } catch (error) {
                     console.error("Auth check failed", error);
                     set({ user: null, token: null, isAuthenticated: false });
+                    delete api.defaults.headers.common['Authorization'];
                 }
             }
         }),
         {
             name: 'user-storage',
             storage: createJSONStorage(() => localStorage),
+             onRehydrateStorage: (state) => {
+                if (state.token) {
+                    api.defaults.headers.common['Authorization'] = `Bearer ${state.token}`;
+                }
+            }
         }
     )
 );
+
+// Initialize the authorization header on app load if the token exists
+const initialToken = (useUserStore.getState() as UserState).token;
+if (initialToken) {
+    api.defaults.headers.common['Authorization'] = `Bearer ${initialToken}`;
+}

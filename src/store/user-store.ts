@@ -1,16 +1,14 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { api } from "@/lib/api";
-
-interface User {
-  _id: string;
-  name: string;
-  email: string;
-  avatarUrl?: string; // Optional avatar
-  bio?: string;
-  followers?: number;
-  following?: number;
-}
+import type {
+  ApiResponse,
+  LoginRequest,
+  LoginResponse,
+  ApiUser,
+  User,
+} from "@/types/api";
+import { mapApiUserToUser } from "@/types/api";
 
 interface UserState {
   user: User | null;
@@ -29,8 +27,11 @@ export const useUserStore = create<UserState>()(
       isAuthenticated: false,
 
       login: async (email: string, password: string) => {
-        const response = await api.post("/auth/login", { email, password });
-        const { token } = response.data.data; // Fixed: API returns token in data.data.token
+        const response = await api.post<ApiResponse<LoginResponse>>(
+          "/auth/login",
+          { email, password }
+        );
+        const { token } = response.data.data;
 
         // Set the token first
         set({ token });
@@ -53,21 +54,11 @@ export const useUserStore = create<UserState>()(
           // Set the Authorization header for this specific request
           api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
-          const response = await api.get("/auth/profile");
-          const userData = response.data.data; // Fixed: API returns user in data.data
+          const response = await api.get<ApiResponse<ApiUser>>("/auth/profile");
+          const apiUser = response.data.data;
 
-          // Map API response to our user interface
-          const user = {
-            _id: userData._id || userData.id, // Handle both _id and id
-            name: userData.username || userData.name, // Handle both username and name
-            email: userData.email,
-            avatarUrl: userData.avatarUrl || "https://placehold.co/128x128.png",
-            bio:
-              userData.bio ||
-              "Car enthusiast and professional modifier. Passionate about creating unique and high-performance vehicles.",
-            followers: userData.followers || 1250,
-            following: userData.following || 340,
-          };
+          // Map API user to frontend user interface
+          const user = mapApiUserToUser(apiUser);
 
           set({ user, isAuthenticated: true });
         } catch (error) {

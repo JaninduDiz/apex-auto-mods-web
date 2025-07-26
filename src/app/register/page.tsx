@@ -17,6 +17,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { api } from "@/lib/api";
+import type { ApiResponse, CreateUserRequest } from "@/types/api";
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -31,11 +32,12 @@ export default function RegisterForm() {
     setIsLoading(true);
 
     try {
-      await api.post("/auth/register", {
-        name,
+      const userData: CreateUserRequest = {
+        username: name,
         email,
         password,
-      });
+      };
+      await api.post<ApiResponse<any>>("/auth/register", userData);
 
       toast({
         title: "Registration Successful",

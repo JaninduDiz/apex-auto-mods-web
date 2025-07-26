@@ -36,6 +36,7 @@ interface DataState {
     getBuildById: (id: string) => Build | undefined;
     getActiveServiceById: (id: string) => ActiveService | undefined;
     saveBuild: (build: NewBuild, buildId?: string) => Promise<void>;
+    deleteBuild: (buildId: string) => Promise<void>;
     addVehicle: (vehicle: NewVehicle) => Promise<void>;
 }
 
@@ -132,6 +133,18 @@ const useDataStore = create<DataState>((set, get) => ({
             set(state => ({
                 builds: [...state.builds, newBuild],
             }));
+        }
+    },
+    
+    deleteBuild: async (buildId) => {
+        try {
+            await api.delete(`/builds/${buildId}`);
+            set(state => ({
+                builds: state.builds.filter(b => b._id !== buildId),
+            }));
+        } catch (error) {
+            console.error("Failed to delete build:", error);
+            throw error;
         }
     }
 

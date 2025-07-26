@@ -1,5 +1,4 @@
-export const DEFAULT_AVATAR_URL =
-  "https://www.nicepng.com/png/detail/128-1280406_view-user-icon-png-user-circle-icon-png.png";
+export const DEFAULT_AVATAR_URL = "/user-profile.png";
 
 /**
  * Get the avatar URL with fallback to default

@@ -138,8 +138,7 @@ export const mapApiUserToUser = (apiUser: ApiUser): User => ({
   _id: apiUser._id,
   name: apiUser.username,
   email: apiUser.email,
-  avatarUrl:
-    "https://www.nicepng.com/png/detail/128-1280406_view-user-icon-png-user-circle-icon-png.png",
+  avatarUrl: "/user-profile.png",
   bio: "Car enthusiast and professional modifier. Passionate about creating unique and high-performance vehicles.",
   followers: 0,
   following: 0,

@@ -53,6 +53,7 @@ interface DataState {
     vehicle: Partial<NewVehicle>
   ) => Promise<void>;
   deleteVehicle: (vehicleId: string) => Promise<void>;
+  clearUserData: () => void;
 }
 
 const useDataStore = create<DataState>((set, get) => ({
@@ -70,9 +71,9 @@ const useDataStore = create<DataState>((set, get) => ({
   services: [],
   activeServices: [],
   userVehicles: [],
-  isLoading: true,
-  isLoadingBuilds: true,
-  isLoadingVehicles: true,
+  isLoading: false,
+  isLoadingBuilds: false,
+  isLoadingVehicles: false,
 
   fetchDashboardData: async () => {
     set({ isLoading: true });
@@ -88,10 +89,20 @@ const useDataStore = create<DataState>((set, get) => ({
   fetchBuilds: async () => {
     set({ isLoadingBuilds: true });
     try {
+      // Get current user ID for client-side filtering
+      const { useUserStore } = await import("./user-store");
+      const currentUser = useUserStore.getState().user;
+
       const response = await api.get<ApiResponse<ApiBuild[]>>("/builds");
       const apiBuilds = response.data.data;
       const builds = apiBuilds.map(mapApiBuildToBuild);
-      set({ builds, isLoadingBuilds: false });
+
+      // Filter builds by current user ID as an additional safeguard
+      const userBuilds = currentUser
+        ? builds.filter((build) => build.userId === currentUser._id)
+        : [];
+
+      set({ builds: userBuilds, isLoadingBuilds: false });
     } catch (error) {
       console.error("Failed to fetch builds:", error);
       set({ builds: [], isLoadingBuilds: false });
@@ -113,10 +124,20 @@ const useDataStore = create<DataState>((set, get) => ({
   fetchUserVehicles: async () => {
     set({ isLoadingVehicles: true });
     try {
+      // Get current user ID for client-side filtering
+      const { useUserStore } = await import("./user-store");
+      const currentUser = useUserStore.getState().user;
+
       const response = await api.get<ApiResponse<ApiVehicle[]>>("/vehicles");
       const apiVehicles = response.data.data;
       const vehicles = apiVehicles.map(mapApiVehicleToVehicle);
-      set({ userVehicles: vehicles, isLoadingVehicles: false });
+
+      // Filter vehicles by current user ID as an additional safeguard
+      const userVehicles = currentUser
+        ? vehicles.filter((vehicle) => vehicle.userId === currentUser._id)
+        : [];
+
+      set({ userVehicles, isLoadingVehicles: false });
     } catch (error) {
       console.error("Failed to fetch user vehicles:", error);
       set({ userVehicles: [], isLoadingVehicles: false });
@@ -219,6 +240,23 @@ const useDataStore = create<DataState>((set, get) => ({
       console.error("Failed to delete vehicle:", error);
       throw error;
     }
+  },
+
+  clearUserData: () => {
+    set({
+      builds: [],
+      userVehicles: [],
+      hotCollections: [],
+      regularCollections: [],
+      ongoingService: {
+        isSerivceInProgress: false,
+        id: "",
+        carModel: "",
+        service: "",
+        progress: 0,
+        image: "",
+      },
+    });
   },
 }));
 

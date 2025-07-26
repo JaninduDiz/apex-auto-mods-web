@@ -137,10 +137,11 @@ export const mapApiUserToUser = (apiUser: ApiUser): User => ({
   _id: apiUser._id,
   name: apiUser.username,
   email: apiUser.email,
-  avatarUrl: "https://placehold.co/128x128.png",
+  avatarUrl:
+    "https://www.nicepng.com/png/detail/128-1280406_view-user-icon-png-user-circle-icon-png.png",
   bio: "Car enthusiast and professional modifier. Passionate about creating unique and high-performance vehicles.",
-  followers: 1250,
-  following: 340,
+  followers: 0, // Default values for new users
+  following: 0,
 });
 
 export const mapApiVehicleToVehicle = (apiVehicle: ApiVehicle): Vehicle => ({

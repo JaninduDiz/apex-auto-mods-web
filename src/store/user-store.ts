@@ -35,12 +35,23 @@ export const useUserStore = create<UserState>()(
 
         // Set the token first
         set({ token });
-        console.log("token", token);
+
+        // Clear any existing user data from the data store
+        const { useDataStore } = await import("./data-store");
+        useDataStore.getState().clearUserData();
+
         // Wait for the profile to be fetched before considering login complete
         await get().checkAuth();
       },
 
       logout: () => {
+        // Clear user data from data store as well
+        const { useDataStore } = require("./data-store");
+        useDataStore.getState().clearUserData();
+
+        // Clear the authorization header
+        delete api.defaults.headers.common["Authorization"];
+
         set({ user: null, token: null, isAuthenticated: false });
       },
 

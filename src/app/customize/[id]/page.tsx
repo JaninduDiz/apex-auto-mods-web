@@ -1,7 +1,8 @@
+
 "use client";
 
-import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { CarPreview } from "@/components/customization/CarPreview";
 import { CustomizationPanel } from "@/components/customization/CustomizationPanel";
 import { useToast } from "@/hooks/use-toast";
@@ -16,10 +17,11 @@ export interface CustomizationState {
   parts: Part[];
 }
 
-export default function CustomizationWorkspacePage() {
+function CustomizationWorkspace() {
   const { toast } = useToast();
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const buildId = params.id as string;
   
   const { getBuildById, saveBuild, isLoadingBuilds, fetchBuilds } = useDataStore();
@@ -29,12 +31,28 @@ export default function CustomizationWorkspacePage() {
     parts: [],
   });
   
-  const [carModel, setCarModel] = useState("Toyota Supra GR"); // Default model
+  const [carModel, setCarModel] = useState("Default Model");
   const [isPageLoading, setIsPageLoading] = useState(true);
 
   useEffect(() => {
     fetchBuilds();
   }, [fetchBuilds]);
+
+  useEffect(() => {
+    if (buildId === 'new') {
+        const modelFromQuery = searchParams.get('carModel');
+        if (modelFromQuery) {
+            setCarModel(decodeURIComponent(modelFromQuery));
+        } else {
+             toast({
+                variant: "destructive",
+                title: "No Vehicle Selected",
+                description: "Redirecting to the build selection page.",
+            });
+            router.push('/customize');
+        }
+    }
+  }, [buildId, searchParams, router, toast]);
 
   useEffect(() => {
     if (buildId && buildId !== 'new' && !isLoadingBuilds) {
@@ -51,7 +69,7 @@ export default function CustomizationWorkspacePage() {
                 title: "Build not found",
                 description: "Redirecting to create a new build.",
             });
-            router.push('/customize/new');
+            router.push('/customize');
         }
     }
     if(!isLoadingBuilds) {
@@ -119,4 +137,16 @@ export default function CustomizationWorkspacePage() {
       </div>
     </div>
   );
+}
+
+export default function CustomizationWorkspacePage() {
+    return (
+        <Suspense fallback={
+            <div className="flex items-center justify-center h-screen">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            </div>
+        }>
+            <CustomizationWorkspace />
+        </Suspense>
+    )
 }

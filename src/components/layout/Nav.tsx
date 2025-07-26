@@ -38,7 +38,7 @@ export function Nav() {
         <>
             {/* Desktop Sidebar */}
             <TooltipProvider>
-                <nav className="hidden md:flex h-screen flex-col items-center justify-between w-24 bg-sidebar text-sidebar-foreground p-4 rounded-r-3xl sticky top-0">
+                <nav className="hidden md:flex h-screen flex-col items-center justify-between w-24 bg-sidebar text-sidebar-foreground p-4 rounded-r-3xl fixed top-0 left-0">
                     <div className="flex flex-col items-center gap-8">
                         <Tooltip>
                             <TooltipTrigger asChild>

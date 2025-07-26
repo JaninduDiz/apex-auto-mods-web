@@ -25,7 +25,7 @@ export default function RootLayout({
       <body className={cn("font-sans antialiased")}>
         <div className="flex min-h-screen w-full">
           <Nav />
-          <div className="flex flex-col flex-1">
+          <div className="flex flex-col flex-1 md:pl-24">
             <Header />
             <main className="flex-1 overflow-y-auto p-4 md:p-8 md:pt-4">{children}</main>
           </div>

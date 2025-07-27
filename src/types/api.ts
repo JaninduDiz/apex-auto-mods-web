@@ -71,6 +71,7 @@ export interface ApiBuild {
   userId: string;
   carModel: string;
   color: string;
+  wheelColor?: string;
   selectedParts: string[];
   createdAt: string;
   __v?: number;
@@ -79,6 +80,7 @@ export interface ApiBuild {
 export interface CreateBuildRequest {
   carModel: string;
   color: string;
+  wheelColor?: string;
   selectedParts: string[];
 }
 
@@ -129,6 +131,7 @@ export interface Build {
   userId: string;
   carModel: string;
   color: string;
+  wheelColor?: string;
   selectedParts: string[];
   createdAt: string;
 }
@@ -159,6 +162,7 @@ export const mapApiBuildToBuild = (apiBuild: ApiBuild): Build => ({
   userId: apiBuild.userId,
   carModel: apiBuild.carModel,
   color: apiBuild.color,
+  wheelColor: apiBuild.wheelColor || "#000000", // Default wheel color if not provided
   selectedParts: apiBuild.selectedParts,
   createdAt: apiBuild.createdAt,
 });

@@ -9,8 +9,10 @@ import { ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useDataStore } from "@/store/data-store";
 
+// Updated state interface with wheelColor
 export interface CustomizationState {
   color: string;
+  wheelColor: string;
   selectedParts: string[];
 }
 
@@ -24,18 +26,23 @@ function CustomizationWorkspace() {
   const { getBuildById, saveBuild, isLoadingBuilds, fetchBuilds } =
     useDataStore();
 
+  // Updated initial state with wheelColor
   const [customization, setCustomization] = useState<CustomizationState>({
     color: "#3F51B5",
+    wheelColor: "#000000",
     selectedParts: [],
   });
 
   const [carModel, setCarModel] = useState("Default Model");
   const [isPageLoading, setIsPageLoading] = useState(true);
+  const [isSavingBuild, setIsSavingBuild] = useState(false);
 
+  // Fetch builds on component mount
   useEffect(() => {
     fetchBuilds();
   }, [fetchBuilds]);
 
+  // Handle new build creation with car model from query params
   useEffect(() => {
     if (buildId === "new") {
       const modelFromQuery = searchParams.get("carModel");
@@ -52,12 +59,15 @@ function CustomizationWorkspace() {
     }
   }, [buildId, searchParams, router, toast]);
 
+  // Load existing build data
   useEffect(() => {
     if (buildId && buildId !== "new" && !isLoadingBuilds) {
       const build = getBuildById(buildId);
       if (build) {
+        // Updated logic for loading a saved build with wheelColor support
         setCustomization({
           color: build.color,
+          wheelColor: build.wheelColor || "#000000",
           selectedParts: build.selectedParts || [],
         });
         setCarModel(build.carModel);
@@ -75,11 +85,10 @@ function CustomizationWorkspace() {
     }
   }, [buildId, router, toast, getBuildById, isLoadingBuilds]);
 
-  const [isSavingBuild, setIsSavingBuild] = useState(false);
-
   const handleSaveBuild = async () => {
     setIsSavingBuild(true);
     try {
+      // Pass the updated customization object with wheelColor
       await saveBuild(
         {
           carModel,
